@@ -1,7 +1,13 @@
 import * as IO from "../helpers/io.ts";
 import { Day01 } from "./main.ts";
 
-let inputResult: IO.result = {
+let inputTest: IO.result = {
+  isSuccess: false,
+  value: "",
+  error: null,
+};
+
+let inputReal: IO.result = {
   isSuccess: false,
   value: "",
   error: null,
@@ -9,25 +15,51 @@ let inputResult: IO.result = {
 
 beforeAll(async () => {
   try {
-    let temp: string = await IO.getInput(__dirname, "input.txt");
-    inputResult = IO.success(temp);
+    let temp: string = await IO.getInput(__dirname, "input_test.txt");
+    inputTest = IO.success(temp);
   } catch (err) {
-    inputResult = IO.failure(err);
+    inputTest = IO.failure(err);
+  }
+
+  try {
+    let temp: string = await IO.getInput(__dirname, "input.txt");
+    inputReal = IO.success(temp);
+  } catch (err) {
+    inputReal = IO.failure(err);
   }
 });
 
-test("01-1", () => {
-  if (inputResult.isSuccess) {
-    expect(Day01.partOne(inputResult.value)).toBe(0);
+test("01-1-test", () => {
+  if (inputTest.isSuccess) {
+    expect(Day01.partOne(inputTest.value)).toBe(142);
   } else {
-    console.error(inputResult.error);
+    console.error(inputTest.error);
   }
 });
 
-test("01-2", () => {
-  if (inputResult.isSuccess) {
-    expect(Day01.partTwo(inputResult.value)).toBe(0);
+test("01-1-real", () => {
+  if (inputReal.isSuccess) {
+    expect(Day01.partOne(inputReal.value)).toBe(55712);
   } else {
-    console.error(inputResult.error);
+    console.error(inputReal.error);
+  }
+});
+
+test("01-2-test", () => {
+  const input = `two1nine
+  eightwothree
+  abcone2threexyz
+  xtwone3four
+  4nineeightseven2
+  zoneight234
+  7pqrstsixteen`;
+  expect(Day01.partTwo(input)).toBe(281);
+});
+
+test("01-2-real", () => {
+  if (inputReal.isSuccess) {
+    expect(Day01.partTwo(inputReal.value)).toBe(55413);
+  } else {
+    console.error(inputReal.error);
   }
 });
