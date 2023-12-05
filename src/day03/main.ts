@@ -1,7 +1,9 @@
+import { Utils } from "../helpers/utils.ts";
+
 export const Day03 = {
   partOne: (input: string): number => {
     // console.log(getSurroundingCellIndexes({ x: 1, y: 1 }));
-    console.log(main(input));
+    // console.log(main(input));
     return 0;
   },
   partTwo: (input: string): number => {
@@ -38,11 +40,18 @@ function getValidNumbers(
   row: number,
 ): number[] {
   indexes.forEach((idx) => {
-    const surroundingCells = getSurroundingCellIndexes({
-      x: row,
-      y: idx.start,
+    let range = Utils.range(idx.start, idx.end);
+    range.forEach((index) => {
+      const surroundingCells = getSurroundingCellIndexes({
+        x: row,
+        y: index,
+      });
     });
-    console.log(validateSurroundingCells(surroundingCells, lines));
+    //   const surroundingCells = getSurroundingCellIndexes({
+    //     x: row,
+    //     y: idx.start,
+    //   });
+    //   console.log(validateSurroundingCells(surroundingCells, lines));
   });
   // lines[row]
 }

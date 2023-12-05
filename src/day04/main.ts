@@ -1,3 +1,5 @@
+import { Utils } from "../helpers/utils.ts";
+
 export const Day04 = {
   partOne: (input: string): number => {
     const result = input
@@ -18,7 +20,7 @@ export const Day04 = {
       let startingIdxToCheck = currentIndex + 1;
       let endingIdxToCheck = startingIdxToCheck + numberOfIndexesToCheck - 1;
       cardsToAdd = {
-        indexes: range(startingIdxToCheck, endingIdxToCheck),
+        indexes: Utils.range(startingIdxToCheck, endingIdxToCheck),
         amountToAdd: copy[currentIndex].amount,
       };
       cardsToAdd.indexes.forEach((card) => {
@@ -47,17 +49,17 @@ type Card = {
   amount: number;
 };
 
-function range(start: number, end: number): number[] {
-  let arr: number[] = [];
-  if (start > end) {
-    return [];
-  } else {
-    for (let i = start; i <= end; ++i) {
-      arr.push(i);
-    }
-  }
-  return arr;
-}
+// function range(start: number, end: number): number[] {
+//   let arr: number[] = [];
+//   if (start > end) {
+//     return [];
+//   } else {
+//     for (let i = start; i <= end; ++i) {
+//       arr.push(i);
+//     }
+//   }
+//   return arr;
+// }
 
 function parseLines(line: string): number {
   const separator = line.indexOf(":");

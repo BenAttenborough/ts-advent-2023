@@ -49,4 +49,16 @@ export const Utils = {
     }
     return container;
   },
+
+  range(start: number, end: number): number[] {
+    let arr: number[] = [];
+    if (start > end) {
+      return [];
+    } else {
+      for (let i = start; i <= end; ++i) {
+        arr.push(i);
+      }
+    }
+    return arr;
+  },
 };
