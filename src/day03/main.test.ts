@@ -1,5 +1,9 @@
 import * as IO from "../helpers/io.ts";
-import { Day03, getSurroundingCellIndexesMega } from "./main.ts";
+import {
+  Day03,
+  getSurroundingCellIndexes,
+  getStartEndIndexesLine,
+} from "./main.ts";
 
 let inputTest: IO.result = {
   isSuccess: false,
@@ -29,25 +33,73 @@ beforeAll(async () => {
   }
 });
 
-test("03 getSurroundingCellIndexesMega", () => {
-  console.log(getSurroundingCellIndexesMega({ x: 0, y: 0 }, 2));
+test("03 getStartEndIndexesLine", () => {
+  expect(getStartEndIndexesLine("467..114..")).toStrictEqual([
+    {
+      end: 2,
+      start: 0,
+    },
+    {
+      end: 7,
+      start: 5,
+    },
+  ]);
+  expect(getStartEndIndexesLine("467..114")).toStrictEqual([
+    {
+      end: 2,
+      start: 0,
+    },
+    {
+      end: 7,
+      start: 5,
+    },
+  ]);
 });
 
-// test("03-1-test", () => {
-//   if (inputTest.isSuccess) {
-//     expect(Day03.partOne(inputTest.value)).toBe(0);
-//   } else {
-//     console.error(inputTest.error);
-//   }
-// });
+test("03 getSurroundingCellIndexes", () => {
+  expect(
+    getSurroundingCellIndexes({ x: 0, y: 0 }, { x: 1, y: 0 }),
+  ).toStrictEqual([
+    { x: -1, y: -1 },
+    { x: 0, y: -1 },
+    { x: 1, y: -1 },
+    { x: 2, y: -1 },
+    { x: -1, y: 0 },
+    { x: 2, y: 0 },
+    { x: -1, y: 1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 1 },
+    { x: 2, y: 1 },
+  ]);
+  expect(
+    getSurroundingCellIndexes({ x: 0, y: 0 }, { x: 0, y: 0 }),
+  ).toStrictEqual([
+    { x: -1, y: -1 },
+    { x: 0, y: -1 },
+    { x: 1, y: -1 },
+    { x: -1, y: 0 },
+    { x: 1, y: 0 },
+    { x: -1, y: 1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 1 },
+  ]);
+});
 
-// test("03-1-real", () => {
-//   if (inputReal.isSuccess) {
-//     expect(Day03.partOne(inputReal.value)).toBe(2449);
-//   } else {
-//     console.error(inputReal.error);
-//   }
-// });
+test("03-1-test", () => {
+  if (inputTest.isSuccess) {
+    expect(Day03.partOne(inputTest.value)).toBe(4361);
+  } else {
+    console.error(inputTest.error);
+  }
+});
+
+test("03-1-real", () => {
+  if (inputReal.isSuccess) {
+    expect(Day03.partOne(inputReal.value)).toBe(536202);
+  } else {
+    console.error(inputReal.error);
+  }
+});
 
 // test("03-2-test", () => {
 //   if (inputTest.isSuccess) {

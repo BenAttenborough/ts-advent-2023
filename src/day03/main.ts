@@ -2,9 +2,17 @@ import { Utils } from "../helpers/utils.ts";
 
 export const Day03 = {
   partOne: (input: string): number => {
-    // console.log(getSurroundingCellIndexes({ x: 1, y: 1 }));
-    console.log(main(input));
-    return 0;
+    let lines = input.split("\n");
+    let validNumbersPerLine = input.split("\n").map((line, row) => {
+      let startEndIndexes: StartEndInx[] = getStartEndIndexesLine(line);
+      return getValidNumbers(startEndIndexes, lines, row);
+    });
+    let validNumbers = validNumbersPerLine.reduce(
+      (cur, next) => cur.concat(next),
+      [],
+    );
+    let result = validNumbers.reduce((cur, next) => cur + next, 0);
+    return result;
   },
   partTwo: (input: string): number => {
     return 0;
@@ -26,103 +34,84 @@ type StartEndInx = {
   end: number;
 };
 
-function main(input: string): number {
-  let lines = input.split("\n");
-  let startEndIndexes: StartEndInx[] = getStartEndIndexes(lines);
-  getValidNumbers(startEndIndexes, lines, 0);
-  console.log(`startEndIndexes: ${JSON.stringify(startEndIndexes)}`);
-  return lines;
-}
-
 function getValidNumbers(
   indexes: StartEndInx[],
   lines: string[],
   row: number,
 ): number[] {
+  let validNumbers: number[] = [];
   indexes.forEach((idx) => {
-    let range = Utils.range(idx.start, idx.end);
-    range.forEach((index) => {
-      const surroundingCells = getSurroundingCellIndexes({
-        x: row,
-        y: index,
+    const surroundingCells = getSurroundingCellIndexes(
+      { x: idx.start, y: row },
+      { x: idx.end, y: row },
+    );
+    // console.log(surroundingCells);
+    // console.log(validateSurroundingCells(surroundingCells, lines));
+    if (validateSurroundingCells(surroundingCells, lines)) {
+      let range = Utils.range(idx.start, idx.end);
+      let numberAsString = "";
+      range.forEach((idx) => {
+        numberAsString += lines[row][idx];
       });
-      console.log(validateSurroundingCells(surroundingCells, lines));
-      if (validateSurroundingCells(surroundingCells, lines)) {
-        console.log(`range ${range}`);
+      if (numberAsString) {
+        validNumbers.push(Number(numberAsString));
       }
-    });
-    //   const surroundingCells = getSurroundingCellIndexes({
-    //     x: row,
-    //     y: idx.start,
-    //   });
-    //   console.log(validateSurroundingCells(surroundingCells, lines));
+    }
   });
-  // lines[row]
+  return validNumbers;
 }
 
 function validateSurroundingCells(
   surroundingCells: Point[],
   lines: string[],
 ): any {
-  return !surroundingCells.some((point) => {
-    if (lines[point.x] === undefined || lines[point.x][point.y] === undefined) {
+  return surroundingCells.some((point) => {
+    if (lines[point.y] === undefined || lines[point.y][point.x] === undefined) {
+      // console.log("-");
       return false;
     }
-    const cellVal = lines[point.x][point.y];
+    const cellVal = lines[point.y][point.x];
+    // console.log(cellVal);
+
     return cellVal !== "." && !isNumber(cellVal);
   });
 }
 
-// function validateSurroundingCells
+export function getSurroundingCellIndexes(
+  startCell: Point,
+  endCell: Point,
+): Point[] {
+  let surroundingCells: Point[] = [];
+  for (let x = startCell.x - 1; x <= endCell.x + 1; ++x) {
+    surroundingCells.push({ x: x, y: startCell.y - 1 });
+  }
+  surroundingCells.push({ x: startCell.x - 1, y: startCell.y });
+  surroundingCells.push({ x: endCell.x + 1, y: startCell.y });
+  for (let x = startCell.x - 1; x <= endCell.x + 1; ++x) {
+    surroundingCells.push({ x: x, y: startCell.y + 1 });
+  }
+  return surroundingCells;
+}
 
-function getStartEndIndexes(lines: string[]) {
+export function getStartEndIndexesLine(line: string) {
   let startIdx = -1;
   let endIdx = -1;
   let startEndIndexes: StartEndInx[] = [];
-  for (let i = 0; i < lines[0].length; i++) {
-    if (isNumber(lines[0][i])) {
+  line.split("").map((char, charIdx) => {
+    if (isNumber(char)) {
       if (startIdx < 0) {
-        startIdx = i;
+        startIdx = charIdx;
       }
-      if (i === lines[0].length - 1) {
-        endIdx = i;
-        startEndIndexes.push({ start: startIdx, end: endIdx });
+      if (charIdx === line.length - 1) {
+        startEndIndexes.push({ start: startIdx, end: charIdx });
       }
     } else {
       if (startIdx >= 0) {
-        endIdx = i;
+        endIdx = charIdx - 1;
         startEndIndexes.push({ start: startIdx, end: endIdx });
         startIdx = endIdx = -1;
       }
     }
-  }
+  });
   return startEndIndexes;
-}
-
-function getSurroundingCellIndexes(cell: Point): Point[] {
-  let surroundingCells: Point[] = [];
-  for (let y = cell.y - 1; y <= cell.y + 1; ++y) {
-    for (let x = cell.x - 1; x <= cell.x + 1; ++x) {
-      if (!(x === cell.x && y === cell.y)) {
-        surroundingCells.push({ x: x, y: y });
-      }
-    }
-  }
-  return surroundingCells;
-}
-
-export function getSurroundingCellIndexesMega(
-  cell: Point,
-  length: number,
-): Point[] {
-  let surroundingCells: Point[] = [];
-  for (let x = cell.x - 1; x <= cell.x + (length - 1) + 1; ++x) {
-    surroundingCells.push({ x: x, y: cell.y - 1 });
-  }
-  surroundingCells.push({ x: cell.x - 1, y: cell.y });
-  surroundingCells.push({ x: cell.x + length, y: cell.y });
-  for (let x = cell.x - 1; x <= cell.x + (length - 1) + 1; ++x) {
-    surroundingCells.push({ x: x, y: cell.y + 1 });
-  }
-  return surroundingCells;
 }
