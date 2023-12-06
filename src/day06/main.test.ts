@@ -29,7 +29,7 @@ beforeAll(async () => {
   }
 });
 
-test("01-1-test", () => {
+test("06-1-test", () => {
   if (inputTest.isSuccess) {
     expect(Day06.partOne(inputTest.value)).toBe(0);
   } else {
@@ -37,7 +37,7 @@ test("01-1-test", () => {
   }
 });
 
-test("01-1-real", () => {
+test("06-1-real", () => {
   if (inputReal.isSuccess) {
     expect(Day06.partOne(inputReal.value)).toBe(0);
   } else {
@@ -45,7 +45,7 @@ test("01-1-real", () => {
   }
 });
 
-test("01-2-test", () => {
+test("06-2-test", () => {
   if (inputTest.isSuccess) {
     expect(Day06.partTwo(inputTest.value)).toBe(0);
   } else {
@@ -53,7 +53,7 @@ test("01-2-test", () => {
   }
 });
 
-test("01-2-real", () => {
+test("06-2-real", () => {
   if (inputReal.isSuccess) {
     expect(Day06.partTwo(inputReal.value)).toBe(0);
   } else {
