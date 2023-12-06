@@ -3,7 +3,7 @@ import { Utils } from "../helpers/utils.ts";
 export const Day03 = {
   partOne: (input: string): number => {
     // console.log(getSurroundingCellIndexes({ x: 1, y: 1 }));
-    // console.log(main(input));
+    console.log(main(input));
     return 0;
   },
   partTwo: (input: string): number => {
@@ -30,7 +30,7 @@ function main(input: string): number {
   let lines = input.split("\n");
   let startEndIndexes: StartEndInx[] = getStartEndIndexes(lines);
   getValidNumbers(startEndIndexes, lines, 0);
-  // console.log(`startEndIndexes: ${JSON.stringify(startEndIndexes)}`);
+  console.log(`startEndIndexes: ${JSON.stringify(startEndIndexes)}`);
   return lines;
 }
 
@@ -46,6 +46,10 @@ function getValidNumbers(
         x: row,
         y: index,
       });
+      console.log(validateSurroundingCells(surroundingCells, lines));
+      if (validateSurroundingCells(surroundingCells, lines)) {
+        console.log(`range ${range}`);
+      }
     });
     //   const surroundingCells = getSurroundingCellIndexes({
     //     x: row,
@@ -60,7 +64,7 @@ function validateSurroundingCells(
   surroundingCells: Point[],
   lines: string[],
 ): any {
-  return surroundingCells.some((point) => {
+  return !surroundingCells.some((point) => {
     if (lines[point.x] === undefined || lines[point.x][point.y] === undefined) {
       return false;
     }
@@ -103,6 +107,22 @@ function getSurroundingCellIndexes(cell: Point): Point[] {
         surroundingCells.push({ x: x, y: y });
       }
     }
+  }
+  return surroundingCells;
+}
+
+export function getSurroundingCellIndexesMega(
+  cell: Point,
+  length: number,
+): Point[] {
+  let surroundingCells: Point[] = [];
+  for (let x = cell.x - 1; x <= cell.x + (length - 1) + 1; ++x) {
+    surroundingCells.push({ x: x, y: cell.y - 1 });
+  }
+  surroundingCells.push({ x: cell.x - 1, y: cell.y });
+  surroundingCells.push({ x: cell.x + length, y: cell.y });
+  for (let x = cell.x - 1; x <= cell.x + (length - 1) + 1; ++x) {
+    surroundingCells.push({ x: x, y: cell.y + 1 });
   }
   return surroundingCells;
 }

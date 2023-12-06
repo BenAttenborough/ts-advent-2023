@@ -1,5 +1,5 @@
 import * as IO from "../helpers/io.ts";
-import { Day03 } from "./main.ts";
+import { Day03, getSurroundingCellIndexesMega } from "./main.ts";
 
 let inputTest: IO.result = {
   isSuccess: false,
@@ -29,13 +29,17 @@ beforeAll(async () => {
   }
 });
 
-test("03-1-test", () => {
-  if (inputTest.isSuccess) {
-    expect(Day03.partOne(inputTest.value)).toBe(0);
-  } else {
-    console.error(inputTest.error);
-  }
+test("03 getSurroundingCellIndexesMega", () => {
+  console.log(getSurroundingCellIndexesMega({ x: 0, y: 0 }, 2));
 });
+
+// test("03-1-test", () => {
+//   if (inputTest.isSuccess) {
+//     expect(Day03.partOne(inputTest.value)).toBe(0);
+//   } else {
+//     console.error(inputTest.error);
+//   }
+// });
 
 // test("03-1-real", () => {
 //   if (inputReal.isSuccess) {
