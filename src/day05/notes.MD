@@ -13,3 +13,5 @@ fertilizer-to-water map:
 ```
 
 This looks correct to me!
+
+The issue was it doesn't run all of the maps but stops as soon as it finds the first map that works (or maps to itself if no mapping found).
