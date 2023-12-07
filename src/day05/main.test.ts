@@ -29,27 +29,27 @@ beforeAll(async () => {
   }
 });
 
-// test("05-1-test", () => {
-//   if (inputTest.isSuccess) {
-//     expect(Day05.partOne(inputTest.value)).toBe(0);
+test("05-1-test", () => {
+  if (inputTest.isSuccess) {
+    expect(Day05.partOne(inputTest.value)).toBe(0);
 
-//     const conversionTables = getConversionTables(inputTest.value);
-//     // expect(fullyProcessSeed(conversionTables, BigInt(79)).toBe(BigInt(82));
-//     // expect(fullyProcessSeed(conversionTables, 14)).toBe(43);
-//     // expect(fullyProcessSeed(conversionTables, 55)).toBe(86);
-//     // expect(fullyProcessSeed(conversionTables, 13)).toBe(35);
-//   } else {
-//     console.error(inputTest.error);
-//   }
-// });
+    const conversionTables = getConversionTables(inputTest.value);
+    expect(fullyProcessSeed(conversionTables, BigInt(79))).toBe(BigInt(82));
+    // expect(fullyProcessSeed(conversionTables, BigInt(14))).toBe(BigInt(43));
+    // expect(fullyProcessSeed(conversionTables, 55)).toBe(86);
+    // expect(fullyProcessSeed(conversionTables, 13)).toBe(35);
+  } else {
+    console.error(inputTest.error);
+  }
+});
 
-// test("05-1-real", () => {
-//   if (inputReal.isSuccess) {
-//     expect(Day05.partOne(inputReal.value)).toBe(0);
-//   } else {
-//     console.error(inputReal.error);
-//   }
-// });
+test("05-1-real", () => {
+  if (inputReal.isSuccess) {
+    expect(Day05.partOne(inputReal.value)).toBe(0);
+  } else {
+    console.error(inputReal.error);
+  }
+});
 
 test("05-2-test", () => {
   if (inputTest.isSuccess) {

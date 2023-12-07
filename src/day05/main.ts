@@ -6,7 +6,7 @@ export const Day05 = {
 
     let result = input.split("\n\n");
     let seeds = result[0].slice(7).split(" ").map(BigInt);
-    console.log(seeds);
+    // console.log(seeds);
     // console.log(result);
     let conversionTables = getConversionTables(input);
 
@@ -16,15 +16,14 @@ export const Day05 = {
       fullyProcessSeed(conversionTables, x),
     );
 
-    console.log(processedSeeds);
-    console.log(
-      processedSeeds.reduce((prev, next, idx) => {
-        if (idx === 0) {
-          prev = next;
-        }
-        return next < prev ? next : prev;
-      }, BigInt(0)),
-    );
+    // console.log(processedSeeds);
+    const answer = processedSeeds.reduce((prev, next, idx) => {
+      if (idx === 0) {
+        prev = next;
+      }
+      return next < prev ? next : prev;
+    }, BigInt(0));
+    console.log(answer);
 
     // console.log(seed);
     // let test = processSeed(79, {
@@ -53,11 +52,14 @@ export function fullyProcessSeed(
   seed: BigInt,
 ) {
   // console.log("SEED ", seed);
-  const startingSeed = seed;
   for (let i = 0; i < conversionTables.length; i++) {
     // console.log(`Converting seed ${seed} to ${conversionName[i]}`);
     for (let j = 0; j < conversionTables[i].length; j++) {
+      const startingSeed = seed;
       seed = processSeed(seed, conversionTables[i][j]);
+      if (seed !== startingSeed) {
+        break;
+      }
       //   console.log(`seed after [${i}][${j}]: ${seed}`);
     }
     // console.log(`${conversionName[i]} stage converted input to ${seed}`);
@@ -76,7 +78,7 @@ const conversionName = [
 ];
 
 function processSeed(seed: BigInt, conversion: Conversion): BigInt {
-  let diff =
+  let diff: BigInt =
     BigInt(conversion.sourceRangeStart) -
     BigInt(conversion.destinationRangeStart);
 
@@ -107,11 +109,11 @@ function processSeed(seed: BigInt, conversion: Conversion): BigInt {
         BigInt(conversion.rangeLength) -
         BigInt(1),
     );
-    console.log("destinationRange ", destinationRange);
-    console.log("sourceRange ", sourceRange);
+    // console.log("destinationRange ", destinationRange);
+    // console.log("sourceRange ", sourceRange);
 
     const indexToConvert = sourceRange.findIndex((x) => x === BigInt(seed));
-    console.log("index to convert ", indexToConvert);
+    // console.log("index to convert ", indexToConvert);
     return destinationRange[indexToConvert];
     // return seed - diff;
   } else {
