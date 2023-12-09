@@ -67,3 +67,8 @@ test("stringDivideInto test 2", () => {
     "[P] ",
   ]);
 });
+
+test("everyValueTheSame", () => {
+  expect(Utils.everyValueTheSame([3, 3, 3, 3, 3])).toEqual(true);
+  expect(Utils.everyValueTheSame([3, 3, "3", 3, 3])).toEqual(false);
+});

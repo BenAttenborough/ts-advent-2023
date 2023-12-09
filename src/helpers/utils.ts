@@ -27,6 +27,18 @@ export const Utils = {
     return container;
   },
 
+  arrayDivideInto2: (input: any[], divisor: number): any[] => {
+    let loopCount = Math.floor(input.length / divisor);
+    let container = [];
+    for (let i = 0; i < loopCount; ++i) {
+      container.push(input.splice(0, divisor));
+    }
+    if (input.length) {
+      container.push(input);
+    }
+    return container;
+  },
+
   // Takes two sets and returns elements common to both (in an array)
   arrayGetCommonElements: <Type>(set1: Set<Type>, set2: Set<Type>): Type[] => {
     let commonElements: Type[] = [];
@@ -60,5 +72,14 @@ export const Utils = {
       }
     }
     return arr;
+  },
+
+  everyValueTheSame(arr: any[]): boolean {
+    if (arr.length < 2) {
+      return true;
+    }
+
+    const firstItem = arr[0];
+    return arr.every((x) => x === firstItem);
   },
 };

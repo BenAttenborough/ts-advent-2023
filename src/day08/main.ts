@@ -36,7 +36,7 @@ export const Day08 = {
 
   partTwo: (input: string): number => {
     const directions = input.split("\n\n")[0].split("");
-    console.log(directions);
+    // console.log(directions);
     const puzzleMap = new Map<string, PuzzleMapValues>();
     input
       .split("\n\n")[1]
@@ -80,7 +80,7 @@ export const Day08 = {
         };
         puzzleMapStartNodes.set(key, value);
       });
-    console.log(puzzleMapStartNodes);
+    // console.log(puzzleMapStartNodes);
 
     for (let i = 0; i < puzzleMapStartNodes.size; i++) {}
 
