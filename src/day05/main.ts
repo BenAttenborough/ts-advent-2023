@@ -16,27 +16,42 @@ export const Day05 = {
       }
       return next < prev ? next : prev;
     }, 0);
-    console.log(answer);
+    // console.log(answer);
 
     return answer;
   },
   partTwo: (input: string): number => {
     let result = input.split("\n\n");
     let seeds = result[0].slice(7).split(" ").map(Number);
+    // console.log("seeds: ", seeds);
+    let seedSet = new Set();
+    while (seeds.length) {
+      let start: number | undefined = seeds.shift();
+      let range: number | undefined = seeds.shift();
+      // foo.push({
+      //   start: start,
+      //   range: range,
+      // });
+      Utils.range(start, start + range - 1).forEach((seed) => {
+        seedSet.add(seed);
+      });
+    }
 
-    let conversionTables = getConversionTables(input);
+    // console.log("seedSet: ", seedSet);
 
-    const processedSeeds = seeds.map((x) =>
-      fullyProcessSeed(conversionTables, x),
-    );
+    // let conversionTables = getConversionTables(input);
 
-    const answer = processedSeeds.reduce((prev, next, idx) => {
-      if (idx === 0) {
-        prev = next;
-      }
-      return next < prev ? next : prev;
-    }, 0);
-    console.log(answer);
+    // const processedSeeds = seeds.map((x) =>
+    //   fullyProcessSeed(conversionTables, x),
+    // );
+
+    // const answer = processedSeeds.reduce((prev, next, idx) => {
+    //   if (idx === 0) {
+    //     prev = next;
+    //   }
+    //   return next < prev ? next : prev;
+    // }, 0);
+    // console.log(answer);
 
     // return answer;
     return 0;

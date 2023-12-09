@@ -1,3 +1,5 @@
+## PART 1
+
 Seed 14 is wrong not sure why
 
 <!-- Input 14 should have final output of 43, but has 32 -->
@@ -15,3 +17,8 @@ fertilizer-to-water map:
 This looks correct to me!
 
 The issue was it doesn't run all of the maps but stops as soon as it finds the first map that works (or maps to itself if no mapping found).
+
+## PART 2
+
+We need to reduce the range of seeds tested.
+First off we can use a set
