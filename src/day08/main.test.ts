@@ -79,18 +79,18 @@ beforeAll(async () => {
 //   }
 // });
 
-// test("08-2-test", () => {
-//   if (inputTest3.isSuccess) {
-//     expect(Day08.partTwo(inputTest3.value)).toBe(0);
-//   } else {
-//     console.error(inputTest3.error);
-//   }
-// });
-
-test("08-2-real", () => {
-  if (inputReal.isSuccess) {
-    expect(Day08.partTwo(inputReal.value)).toBe(0);
+test("08-2-test", () => {
+  if (inputTest3.isSuccess) {
+    expect(Day08.partTwo(inputTest3.value)).toBe(6);
   } else {
-    console.error(inputReal.error);
+    console.error(inputTest3.error);
   }
 });
+
+// test("08-2-real", () => {
+//   if (inputReal.isSuccess) {
+//     expect(Day08.partTwo(inputReal.value)).toBe(0);
+//   } else {
+//     console.error(inputReal.error);
+//   }
+// });

@@ -1,10 +1,12 @@
+import { dir } from "console";
+
 export const Day08 = {
   partOne: (input: string): number => {
     const startLocation = "AAA";
     const endLocation = "ZZZ";
-    console.log(input);
+    // console.log(input);
     const directions = input.split("\n\n")[0].split("");
-    console.log(directions);
+    // console.log(directions);
     const puzzleMap = new Map<string, PuzzleMapValues>();
     input
       .split("\n\n")[1]
@@ -25,11 +27,11 @@ export const Day08 = {
         };
         puzzleMap.set(key, value);
       });
-    console.log(puzzleMap);
+    // console.log(puzzleMap);
     let counter = 0;
 
     counter = runDirections(directions, puzzleMap, startLocation, endLocation);
-    console.log("counter", counter);
+    // console.log("counter", counter);
 
     return 0;
   },
@@ -59,32 +61,42 @@ export const Day08 = {
       });
     // console.log(puzzleMap);
 
-    const puzzleMapStartNodes = new Map<string, PuzzleMapValues>();
+    const puzzleMapStartNodes: string[] = [];
     input
       .split("\n\n")[1]
       .split("\n")
       .filter((line) => line[2] === "A")
       .forEach((line) => {
-        let key = line.split(" ")[0];
-        let value = {
-          left: line
-            .split(" ")[2]
-            .split("")
-            .filter((char) => char !== "(" && char !== ",")
-            .join(""),
-          right: line
-            .split(" ")[3]
-            .split("")
-            .filter((char) => char !== ")")
-            .join(""),
-        };
-        puzzleMapStartNodes.set(key, value);
+        puzzleMapStartNodes.push(line.split(" ")[0]);
       });
-    // console.log(puzzleMapStartNodes);
+    // puzzleMapStartNodes.filter()
+    // console.log("puzzleMapStartNodes", puzzleMapStartNodes);
 
-    for (let i = 0; i < puzzleMapStartNodes.size; i++) {}
+    let found = false;
+    let count = 0;
 
-    return 0;
+    while (!found && count < 100000000000) {
+      for (let i = 0; i < puzzleMapStartNodes.length; i++) {
+        puzzleMapStartNodes[i] = run(
+          getNextItemLoop(directions, count),
+          puzzleMap,
+          puzzleMapStartNodes[i],
+        );
+      }
+      count++;
+      if (puzzleMapStartNodes.every((node) => node[2] === "Z")) {
+        break;
+      }
+    }
+
+    // console.log(count);
+
+    // console.log("puzzleMapStartNodes", puzzleMapStartNodes);
+
+    // let move = run("L", puzzleMap, "22A");
+    // console.log("move", move);
+
+    return count;
   },
 };
 
@@ -94,6 +106,27 @@ type PuzzleMapValues = {
 };
 
 type PuzzleMap = Map<string, PuzzleMapValues>;
+
+function run(
+  direction: string,
+  puzzleMap: PuzzleMap,
+  startLocation: string,
+): string {
+  if (direction === "L") {
+    // console.log(
+    //   `Looking up: ${direction} for start location of ${startLocation}, answer: ${
+    //     puzzleMap.get(startLocation).left
+    //   }`,
+    // );
+    return puzzleMap.get(startLocation).left;
+  }
+  // console.log(
+  //   `Looking up: ${direction} for start location of ${startLocation}, answer: ${
+  //     puzzleMap.get(startLocation).right
+  //   }`,
+  // );
+  return puzzleMap.get(startLocation).right;
+}
 
 function runDirections(
   directions: string[],
@@ -150,7 +183,13 @@ export function runDirectionsRecursive(
   if (count - 1 > 1000) {
     return -1;
   }
-  return runDirections(directions, puzzleMap, location, endLocation, count);
+  return runDirectionsRecursive(
+    directions,
+    puzzleMap,
+    location,
+    endLocation,
+    count,
+  );
 }
 
 function getNextItemLoop(arr: string[], idx: number): string {

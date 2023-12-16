@@ -3,6 +3,7 @@ import {
   Day03,
   getSurroundingCellIndexes,
   getStartEndIndexesLine,
+  getNumberIndexesLine,
 } from "./main.ts";
 
 let inputTest: IO.result = {
@@ -53,6 +54,17 @@ test("03 getStartEndIndexesLine", () => {
       end: 7,
       start: 5,
     },
+  ]);
+});
+
+test("03 getNumberIndexesLine", () => {
+  expect(getNumberIndexesLine("467..114..")).toStrictEqual([
+    [0, 1, 2],
+    [5, 6, 7],
+  ]);
+  expect(getNumberIndexesLine("467..114")).toStrictEqual([
+    [0, 1, 2],
+    [5, 6, 7],
   ]);
 });
 

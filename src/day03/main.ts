@@ -19,6 +19,10 @@ export const Day03 = {
   },
 };
 
+export function getNumberFrom(point: Point, puzzle: Point[]): number {
+  return 0;
+}
+
 type Point = {
   x: number;
   y: number;
@@ -113,5 +117,32 @@ export function getStartEndIndexesLine(line: string) {
       }
     }
   });
+  // console.log("startEndIndexes", startEndIndexes);
   return startEndIndexes;
+}
+
+type NumberSequence = number[];
+
+export function getNumberIndexesLine(line: string) {
+  let startIdx = -1;
+  let endIdx = -1;
+  let indexes: NumberSequence[] = [];
+  line.split("").map((char, charIdx) => {
+    if (isNumber(char)) {
+      if (startIdx < 0) {
+        startIdx = charIdx;
+      }
+      if (charIdx === line.length - 1) {
+        indexes.push(Utils.range(startIdx, charIdx));
+      }
+    } else {
+      if (startIdx >= 0) {
+        endIdx = charIdx - 1;
+        indexes.push(Utils.range(startIdx, endIdx));
+        startIdx = endIdx = -1;
+      }
+    }
+  });
+  console.log("indexes", indexes);
+  return indexes;
 }
