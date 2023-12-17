@@ -15,6 +15,12 @@ export const Day03 = {
     return result;
   },
   partTwo: (input: string): number => {
+    let lines = input.split("\n");
+    console.log(lines);
+    const numberIndexes = lines.map((line, idx) =>
+      getNumberIndexesLine(line, idx),
+    );
+    // console.log(JSON.stringify(numberIndexes));
     return 0;
   },
 };
@@ -121,28 +127,174 @@ export function getStartEndIndexesLine(line: string) {
   return startEndIndexes;
 }
 
-type NumberSequence = number[];
+type Coordinates = Point[][];
 
-export function getNumberIndexesLine(line: string) {
+export function getNumberIndexesLine(line: string, y: number): Coordinates {
   let startIdx = -1;
   let endIdx = -1;
-  let indexes: NumberSequence[] = [];
+  let indexes: Coordinates = [];
   line.split("").map((char, charIdx) => {
     if (isNumber(char)) {
       if (startIdx < 0) {
         startIdx = charIdx;
       }
       if (charIdx === line.length - 1) {
-        indexes.push(Utils.range(startIdx, charIdx));
+        indexes.push(
+          Utils.range(startIdx, charIdx).map((x) => {
+            return { x, y };
+          }),
+        );
       }
     } else {
       if (startIdx >= 0) {
         endIdx = charIdx - 1;
-        indexes.push(Utils.range(startIdx, endIdx));
+        indexes.push(
+          Utils.range(startIdx, endIdx).map((x) => {
+            return { x, y };
+          }),
+        );
         startIdx = endIdx = -1;
       }
     }
   });
-  console.log("indexes", indexes);
+  // console.log("indexes", indexes);
   return indexes;
+}
+
+export function getGearIndexesLine(line: string, y: number): Point[] {
+  return Array.from(line).reduce<Point[]>((cur, next, x) => {
+    if (next === "*") {
+      cur.push({ x, y });
+    }
+    return cur;
+  }, []);
+}
+
+export function getNumberFromIndexes(
+  lines: string[],
+  coordinates: Point[],
+): number {
+  let numString = "";
+  coordinates.forEach((point) => {
+    numString += lines[point.y][point.x];
+  });
+  return Number(numString);
+}
+
+export function collisionDetection(
+  gear: Point,
+  numberLocations: Coordinates,
+): number[] {
+  const surroundingCells = getSurroundingCellIndexesForPoint(gear);
+  // console.log(surroundingCells);
+  // console.log(numberLocations);
+  // const a = { x: 0, y: 0 };
+  // const b = { x: 0, y: 0 };
+  // console.log(a.x === b.x && a.y === b.y);
+  let container = [];
+  surroundingCells.forEach((cell) => {
+    // console.log(cell);
+    numberLocations.forEach((location) => {
+      // console.log(location);
+      // location.forEach((point) => {
+      //   // console.log(point);
+      //   if (cell.x === point.x && cell.y === point.y) {
+      //     // console.log(`cell [${cell.x}, ${cell.y}] matches`);
+      //     container.push(location);
+      //   }
+      // });
+      if (location.some((point) => cell.x === point.x && cell.y === point.y)) {
+        container.push(location);
+      }
+    });
+  });
+  // console.log(container);
+  return [];
+}
+
+export function getSurroundingCellIndexesForPoint(cell: Point): Point[] {
+  let surroundingCells: Point[] = [];
+  for (let y = cell.y - 1; y <= cell.y + 1; y++) {
+    for (let x = cell.x - 1; x <= cell.x + 1; x++) {
+      // Exclude origin from surrounding cells
+      if (!(x === cell.x && y === cell.y)) {
+        surroundingCells.push({ x, y });
+      }
+    }
+  }
+  return surroundingCells;
+}
+
+type ColliderBoundaries = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
+
+export function getGearColliderBoundaries(gear: Point): ColliderBoundaries {
+  return {
+    top: gear.y - 1,
+    right: gear.x + 1,
+    bottom: gear.y + 1,
+    left: gear.x - 1,
+  };
+}
+
+type StartEndPoints = {
+  start: Point;
+  end: Point;
+};
+
+type FoundNumber = {
+  number: number;
+  colliderBoundaries: ColliderBoundaries;
+};
+
+export function getStartEndIndexes(line: string, y: number): FoundNumber[] {
+  let startIdx = -1;
+  let endIdx = -1;
+  let startEndIndexes: FoundNumber[] = [];
+  line.split("").map((char, charIdx) => {
+    if (isNumber(char)) {
+      if (startIdx < 0) {
+        startIdx = charIdx;
+      }
+      if (charIdx === line.length - 1) {
+        startEndIndexes.push({
+          number: 0,
+          colliderBoundaries: getNumberColliderBoundaries(
+            { x: startIdx, y },
+            { x: charIdx, y },
+          ),
+        });
+      }
+    } else {
+      if (startIdx >= 0) {
+        endIdx = charIdx - 1;
+        startEndIndexes.push({
+          number: 0,
+          colliderBoundaries: getNumberColliderBoundaries(
+            { x: startIdx, y },
+            { x: endIdx, y },
+          ),
+        });
+        startIdx = endIdx = -1;
+      }
+    }
+  });
+  console.log("startEndIndexes", startEndIndexes);
+  return startEndIndexes;
+}
+
+export function getNumberColliderBoundaries(
+  start: Point,
+  end: Point,
+): ColliderBoundaries {
+  return {
+    top: start.y,
+    right: end.x,
+    bottom: end.y,
+    left: start.x,
+  };
 }
