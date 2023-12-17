@@ -251,39 +251,47 @@ type FoundNumber = {
   colliderBoundaries: ColliderBoundaries;
 };
 
-export function getStartEndIndexes(line: string, y: number): FoundNumber[] {
+export function getStartEndIndexes(lines: string): FoundNumber[] {
   let startIdx = -1;
   let endIdx = -1;
   let startEndIndexes: FoundNumber[] = [];
-  line.split("").map((char, charIdx) => {
-    if (isNumber(char)) {
-      if (startIdx < 0) {
-        startIdx = charIdx;
+  lines.split("\n").forEach((line, y) =>
+    line.split("").forEach((char, charIdx) => {
+      if (isNumber(char)) {
+        if (startIdx < 0) {
+          startIdx = charIdx;
+        }
+        if (charIdx === line.length - 1) {
+          startEndIndexes.push({
+            number: getNumberFromIndexes(lines.split("\n"), [
+              { x: startIdx, y },
+              { x: charIdx, y },
+            ]),
+            colliderBoundaries: getNumberColliderBoundaries(
+              { x: startIdx, y },
+              { x: charIdx, y },
+            ),
+          });
+        }
+      } else {
+        if (startIdx >= 0) {
+          endIdx = charIdx - 1;
+          startEndIndexes.push({
+            number: getNumberFromIndexes(lines.split("\n"), [
+              { x: startIdx, y },
+              { x: endIdx, y },
+            ]),
+            colliderBoundaries: getNumberColliderBoundaries(
+              { x: startIdx, y },
+              { x: endIdx, y },
+            ),
+          });
+          startIdx = endIdx = -1;
+        }
       }
-      if (charIdx === line.length - 1) {
-        startEndIndexes.push({
-          number: 0,
-          colliderBoundaries: getNumberColliderBoundaries(
-            { x: startIdx, y },
-            { x: charIdx, y },
-          ),
-        });
-      }
-    } else {
-      if (startIdx >= 0) {
-        endIdx = charIdx - 1;
-        startEndIndexes.push({
-          number: 0,
-          colliderBoundaries: getNumberColliderBoundaries(
-            { x: startIdx, y },
-            { x: endIdx, y },
-          ),
-        });
-        startIdx = endIdx = -1;
-      }
-    }
-  });
-  console.log("startEndIndexes", startEndIndexes);
+    }),
+  );
+  console.log("startEndIndexes:", startEndIndexes);
   return startEndIndexes;
 }
 
@@ -297,4 +305,18 @@ export function getNumberColliderBoundaries(
     bottom: end.y,
     left: start.x,
   };
+}
+
+export function getNumberFromStartEndIndexes(
+  lines: string,
+  coordinates: Point[],
+): number {
+  let numString = "";
+  const linesToArray = lines.split("\n");
+  const line = linesToArray[coordinates[0].y];
+
+  coordinates.forEach((point) => {
+    numString += lines[point.y][point.x];
+  });
+  return Number(numString);
 }
