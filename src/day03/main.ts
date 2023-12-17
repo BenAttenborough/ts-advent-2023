@@ -32,7 +32,6 @@ export const Day03 = {
         }
       });
     });
-    console.log(">>>", total);
     return total;
   },
 };
