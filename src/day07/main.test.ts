@@ -1,5 +1,10 @@
 import * as IO from "../helpers/io.ts";
-import { Day07, getInfoOnHands, evaluateCards } from "./main.ts";
+import {
+  Day07,
+  getInfoOnHands,
+  evaluateCards,
+  convertCardChar,
+} from "./main.ts";
 
 let inputTest: IO.result = {
   isSuccess: false,
@@ -54,27 +59,39 @@ test("07-2-test", () => {
 });
 
 test("07-getInfoOnHands", () => {
-  expect(getInfoOnHands(["K", "K", "6", "7", "7"])).toStrictEqual([
+  expect(getInfoOnHands([13, 13, 6, 7, 7])).toStrictEqual([
     {
-      cardType: "K",
-      number: 2,
+      cardType: 13,
+      amount: 2,
     },
     {
-      cardType: "6",
-      number: 1,
+      cardType: 6,
+      amount: 1,
     },
     {
-      cardType: "7",
-      number: 2,
+      cardType: 7,
+      amount: 2,
     },
   ]);
 });
+
+test("07-convertCardChar", () => {
+  expect(convertCardChar("2")).toBe(2);
+  expect(convertCardChar("5")).toBe(5);
+  expect(convertCardChar("9")).toBe(9);
+  expect(convertCardChar("T")).toBe(10);
+  expect(convertCardChar("J")).toBe(11);
+  expect(convertCardChar("Q")).toBe(12);
+  expect(convertCardChar("K")).toBe(13);
+  expect(convertCardChar("A")).toBe(14);
+});
+
 test("07-getInfoOnHands", () => {
-  expect(evaluateCards(["3", "2", "T", "3", "K"])).toBe("ONE_PAIR");
-  expect(evaluateCards(["T", "5", "5", "J", "5"])).toBe("THREE_OAK");
-  expect(evaluateCards(["K", "K", "6", "7", "7"])).toBe("TWO_PAIR");
-  expect(evaluateCards(["K", "T", "J", "J", "T"])).toBe("TWO_PAIR");
-  expect(evaluateCards(["Q", "Q", "Q", "J", "A"])).toBe("THREE_OAK");
+  expect(evaluateCards([3, 2, 10, 3, 13])).toBe("ONE_PAIR");
+  expect(evaluateCards([10, 5, 5, 11, 5])).toBe("THREE_OAK");
+  expect(evaluateCards([13, 13, 6, 7, 7])).toBe("TWO_PAIR");
+  expect(evaluateCards([13, 10, 11, 11, 10])).toBe("TWO_PAIR");
+  expect(evaluateCards([12, 12, 12, 11, 14])).toBe("THREE_OAK");
 });
 
 test("07-2-real", () => {

@@ -2,15 +2,15 @@ export const Day07 = {
   partOne: (input: string): number => {
     const result = input.split("\n").map((hand) => {
       const [cardsString, bidString] = hand.split(" ");
-      const cards = Array.from(cardsString);
+      const cards = Array.from(cardsString).map(convertCardChar);
       const bid = Number(bidString);
       return { cards, bid };
     });
     console.log(result);
-    console.log(evaluateCards(result[2].cards));
+    console.log("foo", evaluateCards(result[2].cards));
     console.log(
       "maxNumberOfType",
-      maxNumberOfType(getInfoOnHands(["K", "K", "6", "7", "7"])),
+      maxNumberOfType(getInfoOnHands([13, 13, 6, 7, 7])),
     );
     return 0;
   },
@@ -20,7 +20,7 @@ export const Day07 = {
   },
 };
 
-type Cards = string[];
+type Cards = number[];
 
 type Hand = {
   cards: Cards;
@@ -37,14 +37,14 @@ type Rank =
   | "HIGH_CARD";
 
 type HandInfo = {
-  cardType: string;
-  number: number;
+  cardType: number;
+  amount: number;
 };
 
 // Tests
 function maxNumberOfType(handInfo: HandInfo[]): number {
   return handInfo.reduce(
-    (cur, next) => (next.number > cur ? next.number : cur),
+    (cur, next) => (next.amount > cur ? next.amount : cur),
     0,
   );
 }
@@ -56,7 +56,7 @@ export function getInfoOnHands(cards: Cards): HandInfo[] {
   uniqueCardTypes.forEach((cardType) => {
     infoOnHands.push({
       cardType,
-      number: cards.filter((card) => card === cardType).length,
+      amount: cards.filter((card) => card === cardType).length,
     });
   });
   return infoOnHands;
@@ -81,4 +81,24 @@ export function evaluateCards(cards: Cards): Rank {
   }
 
   return result;
+}
+
+export function convertCardChar(cardChar: string): number {
+  if (Number(cardChar)) {
+    return Number(cardChar);
+  } else {
+    switch (cardChar) {
+      case "T":
+        return 10;
+      case "J":
+        return 11;
+      case "Q":
+        return 12;
+      case "K":
+        return 13;
+      case "A":
+        return 14;
+    }
+    return 0; // Should never happen
+  }
 }
