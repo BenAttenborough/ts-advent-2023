@@ -125,41 +125,6 @@ function getStartEndIndexesLine(line: string) {
   return startEndIndexes;
 }
 
-type Coordinates = Point[][];
-
-function getNumberIndexesLine(line: string, y: number): Coordinates {
-  let startIdx = -1;
-  let endIdx = -1;
-  let indexes: Coordinates = [];
-  line.split("").map((char, charIdx) => {
-    if (isNumber(char)) {
-      if (startIdx < 0) {
-        startIdx = charIdx;
-      }
-      if (charIdx === line.length - 1) {
-        indexes.push(
-          Utils.range(startIdx, charIdx).map((x) => {
-            return { x, y };
-          }),
-        );
-      }
-    } else {
-      if (startIdx >= 0) {
-        endIdx = charIdx - 1;
-        indexes.push(
-          Utils.range(startIdx, endIdx).map((x) => {
-            return { x, y };
-          }),
-        );
-        startIdx = endIdx = -1;
-      }
-    }
-  });
-  return indexes;
-}
-
-// -----------------------
-
 export function getGearIndexes(lines: string): Point[] {
   return lines
     .split("\n")
