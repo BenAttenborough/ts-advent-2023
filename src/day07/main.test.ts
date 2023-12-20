@@ -3,7 +3,10 @@ import {
   Day07,
   getInfoOnHands,
   evaluateCards,
-  convertCardChar,
+  convertCardCharPart1,
+  findFirstDifference,
+  sortCardsInSameRank,
+  convertJacks,
 } from "./main.ts";
 
 let inputTest: IO.result = {
@@ -36,7 +39,7 @@ beforeAll(async () => {
 
 test("07-1-test", () => {
   if (inputTest.isSuccess) {
-    expect(Day07.partOne(inputTest.value)).toBe(0);
+    expect(Day07.partOne(inputTest.value)).toBe(6440);
   } else {
     console.error(inputTest.error);
   }
@@ -44,19 +47,11 @@ test("07-1-test", () => {
 
 // test("07-1-real", () => {
 //   if (inputReal.isSuccess) {
-//     expect(Day07.partOne(inputReal.value)).toBe(0);
+//     expect(Day07.partOne(inputReal.value)).toBe(253313241);
 //   } else {
 //     console.error(inputReal.error);
 //   }
 // });
-
-test("07-2-test", () => {
-  if (inputTest.isSuccess) {
-    expect(Day07.partTwo(inputTest.value)).toBe(0);
-  } else {
-    console.error(inputTest.error);
-  }
-});
 
 test("07-getInfoOnHands", () => {
   expect(getInfoOnHands([13, 13, 6, 7, 7])).toStrictEqual([
@@ -76,14 +71,55 @@ test("07-getInfoOnHands", () => {
 });
 
 test("07-convertCardChar", () => {
-  expect(convertCardChar("2")).toBe(2);
-  expect(convertCardChar("5")).toBe(5);
-  expect(convertCardChar("9")).toBe(9);
-  expect(convertCardChar("T")).toBe(10);
-  expect(convertCardChar("J")).toBe(11);
-  expect(convertCardChar("Q")).toBe(12);
-  expect(convertCardChar("K")).toBe(13);
-  expect(convertCardChar("A")).toBe(14);
+  expect(convertCardCharPart1("2")).toBe(2);
+  expect(convertCardCharPart1("5")).toBe(5);
+  expect(convertCardCharPart1("9")).toBe(9);
+  expect(convertCardCharPart1("T")).toBe(10);
+  expect(convertCardCharPart1("J")).toBe(11);
+  expect(convertCardCharPart1("Q")).toBe(12);
+  expect(convertCardCharPart1("K")).toBe(13);
+  expect(convertCardCharPart1("A")).toBe(14);
+});
+
+test("07-findFirstDifference", () => {
+  expect(findFirstDifference([1, 1, 1, 1], [1, 1, 2, 1])).toBe(2);
+  expect(findFirstDifference([1, 1, 1, 1], [1, 1, 1, 1])).toBe(-1);
+});
+
+test("07-sortCardsInSameRank", () => {
+  expect(
+    sortCardsInSameRank([
+      [2, 1, 1, 1],
+      [1, 1, 2, 1],
+    ]),
+  ).toStrictEqual([
+    [1, 1, 2, 1],
+    [2, 1, 1, 1],
+  ]);
+  expect(
+    sortCardsInSameRank([
+      [1, 1, 1, 1],
+      [1, 1, 1, 1],
+    ]),
+  ).toStrictEqual([
+    [1, 1, 1, 1],
+    [1, 1, 1, 1],
+  ]);
+  expect(
+    sortCardsInSameRank([
+      [1, 1, 1, 4],
+      [1, 1, 1, 1],
+      [1, 1, 1, 3],
+      [1, 1, 1, 5],
+      [1, 1, 1, 3],
+    ]),
+  ).toStrictEqual([
+    [1, 1, 1, 1],
+    [1, 1, 1, 3],
+    [1, 1, 1, 3],
+    [1, 1, 1, 4],
+    [1, 1, 1, 5],
+  ]);
 });
 
 test("07-getInfoOnHands", () => {
@@ -94,9 +130,23 @@ test("07-getInfoOnHands", () => {
   expect(evaluateCards([12, 12, 12, 11, 14])).toBe("THREE_OAK");
 });
 
+test("07-convertJacks", () => {
+  expect(convertJacks([3, 1, 1, 3, 13].sort())).toStrictEqual(
+    [3, 3, 3, 3, 13].sort(),
+  );
+});
+
+test("07-2-test", () => {
+  if (inputTest.isSuccess) {
+    expect(Day07.partTwo(inputTest.value)).toBe(5905);
+  } else {
+    console.error(inputTest.error);
+  }
+});
+
 test("07-2-real", () => {
   if (inputReal.isSuccess) {
-    expect(Day07.partTwo(inputReal.value)).toBe(0);
+    expect(Day07.partTwo(inputReal.value)).toBe(253362743);
   } else {
     console.error(inputReal.error);
   }
