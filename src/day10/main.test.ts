@@ -4,6 +4,8 @@ import {
   addPoints,
   getOrthogonalCells,
   getOrthogonalCellsSafely,
+  pipeDirection,
+  pipes,
 } from "./main.ts";
 
 let inputTest: IO.result = {
@@ -46,7 +48,6 @@ test("10-addPoints", () => {
 });
 
 test("10-1-getOrthogonalCells", () => {
-  console.log(getOrthogonalCells({ x: 0, y: 0 }));
   expect(getOrthogonalCells({ x: 0, y: 0 })).toStrictEqual([
     { x: 0, y: -1 },
     { x: 1, y: 0 },
@@ -56,7 +57,6 @@ test("10-1-getOrthogonalCells", () => {
 });
 
 test("10-getOrthongonalCellsSafely", () => {
-  console.log("foo", getOrthogonalCellsSafely({ x: 1, y: 0 }, 2, 2));
   expect(getOrthogonalCellsSafely({ x: 0, y: 0 }, 2, 2)).toStrictEqual([
     { x: 1, y: 0 },
     { x: 0, y: 1 },
@@ -69,6 +69,17 @@ test("10-getOrthongonalCellsSafely", () => {
     { x: 1, y: 0 },
     { x: 0, y: 1 },
   ]);
+});
+
+test("10 pipeDirection", () => {
+  expect(pipeDirection({ x: 1, y: 0 }, pipes.get("-"))).toStrictEqual({
+    x: 1,
+    y: 0,
+  });
+  expect(pipeDirection({ x: 1, y: 0 }, pipes.get("7"))).toStrictEqual({
+    x: 0,
+    y: 1,
+  });
 });
 
 test("10-1-test", () => {

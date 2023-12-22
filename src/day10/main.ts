@@ -4,6 +4,15 @@ export const Day10 = {
     console.log(result);
     const startLocation = findInGrid(`S`, result);
     console.log(startLocation);
+    const cellsOrthogonalToStart = getOrthogonalCellsSafely(
+      startLocation,
+      result[0].length,
+      result.length,
+    );
+    console.log(
+      "cellsOrthogonalToStart",
+      cellsOrthogonalToStart.map((cell) => result[cell.y][cell.x]),
+    );
     return 0;
   },
 
@@ -31,7 +40,7 @@ export function findInGrid(char: string, grid: String[][]): Point {
   return { x, y };
 }
 
-const Pipes = new Map<string, Point[]>([
+export const pipes = new Map<string, Point[]>([
   [
     "|",
     [
@@ -122,6 +131,24 @@ export function getOrthogonalCellsSafely(
   );
 }
 
-// export function pipeConnects(pipeA: Point[], pipeB: Point[]) {
-//   if (pipeA[0])
+// This assumes all pipes connect
+export function pipeDirection(entrance: Point, pipe: Point[]): Point {
+  // console.log("entrance", entrance);
+  const connectionPoint = {
+    x: oppositeSide(entrance.x),
+    y: oppositeSide(entrance.y),
+  };
+  // console.log("connectionPoint", connectionPoint);
+  // console.log("pipe", pipe);
+  // console.log(
+  //   "pipe.filter((point) => point !== connectionPoint)[0];",
+  //   pipe.filter((point) => point !== connectionPoint)[0],
+  // );
+  return pipe.filter(
+    (point) => point.x !== connectionPoint.x || point.y !== connectionPoint.y,
+  )[0];
+}
+
+// export function calculateStartPipe(startCord: Point): pipe {
+
 // }
