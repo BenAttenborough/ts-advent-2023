@@ -40,7 +40,9 @@ export function findInGrid(char: string, grid: String[][]): Point {
   return { x, y };
 }
 
-export const pipes = new Map<string, Point[]>([
+type Pipe = "|" | "-" | "L" | "J" | "7" | "F" | ".";
+
+export const pipes = new Map<Pipe, Point[]>([
   [
     "|",
     [
