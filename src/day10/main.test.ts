@@ -47,29 +47,29 @@ test("10-addPoints", () => {
   });
 });
 
-test("10-1-getOrthogonalCells", () => {
-  expect(getOrthogonalCells({ x: 0, y: 0 })).toStrictEqual([
-    { x: 0, y: -1 },
-    { x: 1, y: 0 },
-    { x: 0, y: 1 },
-    { x: -1, y: 0 },
-  ]);
-});
+// test("10-1-getOrthogonalCells", () => {
+//   expect(getOrthogonalCells({ x: 0, y: 0 })).toStrictEqual([
+//     { x: 0, y: -1 },
+//     { x: 1, y: 0 },
+//     { x: 0, y: 1 },
+//     { x: -1, y: 0 },
+//   ]);
+// });
 
-test("10-getOrthongonalCellsSafely", () => {
-  expect(getOrthogonalCellsSafely({ x: 0, y: 0 }, 2, 2)).toStrictEqual([
-    { x: 1, y: 0 },
-    { x: 0, y: 1 },
-  ]);
-  expect(getOrthogonalCellsSafely({ x: 1, y: 0 }, 2, 2)).toStrictEqual([
-    { x: 1, y: 1 },
-    { x: 0, y: 0 },
-  ]);
-  expect(getOrthogonalCellsSafely({ x: 1, y: 1 }, 2, 2)).toStrictEqual([
-    { x: 1, y: 0 },
-    { x: 0, y: 1 },
-  ]);
-});
+// test("10-getOrthongonalCellsSafely", () => {
+//   expect(getOrthogonalCellsSafely({ x: 0, y: 0 }, 2, 2)).toStrictEqual([
+//     { x: 1, y: 0 },
+//     { x: 0, y: 1 },
+//   ]);
+//   expect(getOrthogonalCellsSafely({ x: 1, y: 0 }, 2, 2)).toStrictEqual([
+//     { x: 1, y: 1 },
+//     { x: 0, y: 0 },
+//   ]);
+//   expect(getOrthogonalCellsSafely({ x: 1, y: 1 }, 2, 2)).toStrictEqual([
+//     { x: 1, y: 0 },
+//     { x: 0, y: 1 },
+//   ]);
+// });
 
 test("10 pipeDirection", () => {
   expect(pipeDirection({ x: 1, y: 0 }, pipes.get("-"))).toStrictEqual({

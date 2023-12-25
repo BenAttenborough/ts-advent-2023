@@ -11,7 +11,10 @@ export const Day10 = {
     );
     console.log(
       "cellsOrthogonalToStart",
-      cellsOrthogonalToStart.map((cell) => result[cell.y][cell.x]),
+      cellsOrthogonalToStart.map(
+        (orthogonalCell) =>
+          result[orthogonalCell.cell.y][orthogonalCell.cell.x],
+      ),
     );
     return 0;
   },
@@ -39,6 +42,13 @@ export function findInGrid(char: string, grid: String[][]): Point {
   });
   return { x, y };
 }
+
+type Direction = "UP" | "RIGHT" | "DOWN" | "LEFT";
+
+type OrthogonalCell = {
+  direction: Direction;
+  cell: Point;
+};
 
 type Pipe = "|" | "-" | "L" | "J" | "7" | "F" | ".";
 
@@ -113,12 +123,12 @@ export function addPoints(pointA: Point, pointB: Point): Point {
   };
 }
 
-export function getOrthogonalCells(origin: Point): Point[] {
+export function getOrthogonalCells(origin: Point): OrthogonalCell[] {
   return [
-    addPoints(origin, { x: 0, y: -1 }),
-    addPoints(origin, { x: 1, y: 0 }),
-    addPoints(origin, { x: 0, y: 1 }),
-    addPoints(origin, { x: -1, y: 0 }),
+    { direction: "UP", cell: addPoints(origin, { x: 0, y: -1 }) },
+    { direction: "RIGHT", cell: addPoints(origin, { x: 1, y: 0 }) },
+    { direction: "DOWN", cell: addPoints(origin, { x: 0, y: 1 }) },
+    { direction: "LEFT", cell: addPoints(origin, { x: -1, y: 0 }) },
   ];
 }
 
@@ -126,10 +136,13 @@ export function getOrthogonalCellsSafely(
   origin: Point,
   maxWidth: number,
   maxDepth: number,
-): Point[] {
+): OrthogonalCell[] {
   return getOrthogonalCells(origin).filter(
-    (point) =>
-      point.x >= 0 && point.y >= 0 && point.x < maxWidth && point.y < maxDepth,
+    (orthogonalCell) =>
+      orthogonalCell.cell.x >= 0 &&
+      orthogonalCell.cell.y >= 0 &&
+      orthogonalCell.cell.x < maxWidth &&
+      orthogonalCell.cell.y < maxDepth,
   );
 }
 
@@ -154,3 +167,13 @@ export function pipeDirection(entrance: Point, pipe: Point[]): Point {
 // export function calculateStartPipe(startCord: Point): pipe {
 
 // }
+
+export function doesPipeConnect(orthogonalCell: OrthogonalCell): boolean {
+  switch (orthogonalCell.direction) {
+    case "UP":
+      return;
+    case "RIGHT":
+    case "DOWN":
+    case "LEFT":
+  }
+}
