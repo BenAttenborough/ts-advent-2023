@@ -125,11 +125,14 @@ export class Grid {
     });
   }
 
-  // reduce(func: (cur, next, initialValue) => any) {
-  //   this.content.map(row => {
-
-  //   })
-  // }
+  reduce(
+    rowReducer: (arr: any[]) => any,
+    gridReducer: (grid: any[]) => any,
+  ): any {
+    return this.content
+      .map((row) => rowReducer(row))
+      .map((values) => gridReducer(values));
+  }
 
   private checkPosition(pos: [number, number]): boolean {
     if (this.getRow(pos[1]) && this.get(pos[0], pos[1])) {
