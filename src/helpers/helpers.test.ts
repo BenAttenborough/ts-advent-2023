@@ -1,4 +1,4 @@
-import { Utils } from "./utils.ts";
+import { Utils, Grid } from "./utils.ts";
 
 test("lines", () => {
   expect(Utils.lines("abc\ndef")).toEqual(["abc", "def"]);
@@ -71,4 +71,44 @@ test("stringDivideInto test 2", () => {
 test("everyValueTheSame", () => {
   expect(Utils.everyValueTheSame([3, 3, 3, 3, 3])).toEqual(true);
   expect(Utils.everyValueTheSame([3, 3, "3", 3, 3])).toEqual(false);
+});
+
+test("Grid", () => {
+  const myGrid = new Grid([
+    ["a", "b", "c"],
+    ["d", "e", "f"],
+  ]);
+  expect(myGrid.get(2, 1)).toBe("f");
+
+  const myNumbers = new Grid([
+    [1, 2, 3],
+    [4, 5, 6],
+  ]);
+  expect(myNumbers.map((x) => x + 1).content).toStrictEqual([
+    [2, 3, 4],
+    [5, 6, 7],
+  ]);
+  expect(myNumbers.set(0, 0, 9).content).toStrictEqual([
+    [9, 2, 3],
+    [4, 5, 6],
+  ]);
+  expect(myNumbers.getCurrent()).toBe(1);
+  myNumbers.move("DOWN");
+  expect(myNumbers.position).toStrictEqual([0, 1]);
+  expect(myNumbers.getCurrent()).toBe(4);
+  myNumbers.move("DOWN");
+  expect(myNumbers.position).toStrictEqual([0, 1]);
+  expect(myNumbers.getCurrent()).toBe(4);
+  myNumbers.move("RIGHT");
+  expect(myNumbers.position).toStrictEqual([1, 1]);
+  expect(myNumbers.getCurrent()).toBe(5);
+  myNumbers.move("RIGHT");
+  expect(myNumbers.position).toStrictEqual([2, 1]);
+  expect(myNumbers.getCurrent()).toBe(6);
+  myNumbers.move("RIGHT");
+  expect(myNumbers.position).toStrictEqual([2, 1]);
+  expect(myNumbers.getCurrent()).toBe(6);
+  myNumbers.forEach((cell, x, y) => {
+    console.log(`Cell x ${x} y ${y}: ${cell}`);
+  });
 });

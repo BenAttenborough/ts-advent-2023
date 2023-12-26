@@ -1,3 +1,5 @@
+import { Direction } from "readline";
+
 type instruction = {
   amount: number;
   start: number;
@@ -83,3 +85,77 @@ export const Utils = {
     return arr.every((x) => x === firstItem);
   },
 };
+
+export class Grid {
+  content: any[][];
+  position: [number, number];
+  constructor(content: any, position?: [number, number]) {
+    this.content = content;
+    this.position = position || [0, 0];
+  }
+
+  get(x: number, y: number): any {
+    return this.content[y][x];
+  }
+
+  getRow(row: number): any[] {
+    return this.content[row];
+  }
+
+  getCurrent(): any {
+    return this.get(this.position[0], this.position[1]);
+  }
+
+  set(x: number, y: number, data: any): Grid {
+    let newContent = this.content.map((row) => row.slice());
+    newContent[y][x] = data;
+    return new Grid(newContent, this.position);
+  }
+
+  map(func: (x: any) => any[][]): Grid {
+    const newContent = this.content.map((row) => row.map(func));
+    return new Grid(newContent, this.position);
+  }
+
+  forEach(func: (value: any, x?: number, y?: number) => void) {
+    this.content.forEach((row, rowIdx) => {
+      row.forEach((value, colIdx) => {
+        func(value, colIdx, rowIdx);
+      });
+    });
+  }
+
+  // reduce(func: (cur, next, initialValue) => any) {
+  //   this.content.map(row => {
+
+  //   })
+  // }
+
+  private checkPosition(pos: [number, number]): boolean {
+    if (this.getRow(pos[1]) && this.get(pos[0], pos[1])) {
+      return true;
+    }
+    return false;
+  }
+
+  move(direction: Grid.Direction) {
+    let proposedPosition: [number, number] = this.position.slice();
+    switch (direction) {
+      case "UP":
+        proposedPosition[1] -= 1;
+      case "DOWN":
+        proposedPosition[1] += 1;
+      case "LEFT":
+        proposedPosition[0] -= 1;
+      case "RIGHT":
+        proposedPosition[0] += 1;
+    }
+    if (this.checkPosition(proposedPosition)) {
+      this.position = proposedPosition;
+    }
+  }
+}
+
+module Grid {
+  export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+}
