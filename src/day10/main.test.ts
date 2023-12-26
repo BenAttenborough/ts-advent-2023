@@ -6,6 +6,7 @@ import {
   getOrthogonalCellsSafely,
   pipeDirection,
   pipes,
+  getCompatiblePipes,
 } from "./main.ts";
 
 let inputTest: IO.result = {
@@ -47,6 +48,39 @@ test("10-addPoints", () => {
   });
 });
 
+test("10-checkCompatiblePipes", () => {
+  expect(
+    getCompatiblePipes({
+      up: { inputs: [], outputs: [] },
+      right: { inputs: ["LEFT", "RIGHT"], outputs: ["LEFT", "RIGHT"] },
+      down: { inputs: ["DOWN", "UP"], outputs: ["DOWN", "UP"] },
+      left: { inputs: [], outputs: [] },
+    }),
+  ).toStrictEqual(["DOWN", "RIGHT"]);
+
+  try {
+    getCompatiblePipes({
+      up: { inputs: ["DOWN", "UP"], outputs: [] },
+      right: { inputs: ["LEFT", "RIGHT"], outputs: ["LEFT", "RIGHT"] },
+      down: { inputs: ["DOWN", "UP"], outputs: ["DOWN", "UP"] },
+      left: { inputs: [], outputs: [] },
+    });
+  } catch (e) {
+    expect(e).toStrictEqual(
+      new Error("Pipe does not connect to 2 others, connects to 3"),
+    );
+  }
+
+  expect(
+    getCompatiblePipes({
+      up: { inputs: ["LEFT", "RIGHT"], outputs: ["LEFT", "RIGHT"] },
+      right: { inputs: ["LEFT", "RIGHT"], outputs: ["LEFT", "RIGHT"] },
+      down: { inputs: ["DOWN", "UP"], outputs: ["DOWN", "UP"] },
+      left: { inputs: [], outputs: [] },
+    }),
+  ).toStrictEqual(["DOWN", "RIGHT"]);
+});
+
 // test("10-1-getOrthogonalCells", () => {
 //   expect(getOrthogonalCells({ x: 0, y: 0 })).toStrictEqual([
 //     { x: 0, y: -1 },
@@ -71,16 +105,16 @@ test("10-addPoints", () => {
 //   ]);
 // });
 
-test("10 pipeDirection", () => {
-  expect(pipeDirection({ x: 1, y: 0 }, pipes.get("-"))).toStrictEqual({
-    x: 1,
-    y: 0,
-  });
-  expect(pipeDirection({ x: 1, y: 0 }, pipes.get("7"))).toStrictEqual({
-    x: 0,
-    y: 1,
-  });
-});
+// test("10 pipeDirection", () => {
+//   expect(pipeDirection({ x: 1, y: 0 }, pipes.get("-"))).toStrictEqual({
+//     x: 1,
+//     y: 0,
+//   });
+//   expect(pipeDirection({ x: 1, y: 0 }, pipes.get("7"))).toStrictEqual({
+//     x: 0,
+//     y: 1,
+//   });
+// });
 
 test("10-1-test", () => {
   if (inputTest.isSuccess) {

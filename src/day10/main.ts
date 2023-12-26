@@ -1,31 +1,29 @@
 import { Grid } from "../helpers/utils.ts";
 
-function dirs(top: any, right: any, bottom: any, left: any) {
-  return { top, right, bottom, left };
+function dirs(up: any, right: any, down: any, left: any): Directions {
+  return { up, right, down, left };
 }
 
 export const Day10 = {
   partOne: (input: string): number => {
     const grid = new Grid(input.split("\n").map((x) => x.split("")));
     grid.setPosition(...grid.findFirst("S"));
-    // grid.setPosition(grid.findFirst("S")[0], grid.findFirst("S")[1]);
     console.log(grid);
-    console.log(grid.getOrthogonalValues(...grid.position));
-    console.log(dirs(...grid.getOrthogonalValuesFromCurrentPosition()));
-    // const startLocation = findInGrid(`S`, result);
-    // console.log(startLocation);
-    // const cellsOrthogonalToStart = getOrthogonalCellsSafely(
-    //   startLocation,
-    //   result[0].length,
-    //   result.length,
-    // );
-    // console.log(
-    //   "cellsOrthogonalToStart",
-    //   cellsOrthogonalToStart.map(
-    //     (orthogonalCell) =>
-    //       result[orthogonalCell.cell.y][orthogonalCell.cell.x],
-    //   ),
-    // );
+    const convertedGrid = grid.map((cell) => pipes.get(cell));
+    console.log(convertedGrid);
+    const neighbouringCells =
+      convertedGrid.getOrthogonalValuesFromCurrentPosition();
+    //   .map((cell) => pipes.get(cell));
+    console.log("dirs", dirs(...neighbouringCells));
+    const startingPipe = getCompatiblePipes(dirs(...neighbouringCells));
+    console.log("startingPipe", startingPipe);
+    const startX = convertedGrid.position[0];
+    const startY = convertedGrid.position[1];
+    let count = 0;
+    traverse(startingPipe[0], convertedGrid);
+    // do {
+
+    // } while ()
     return 0;
   },
 
@@ -33,6 +31,65 @@ export const Day10 = {
     return 0;
   },
 };
+
+function traverse(direction: Direction, grid: Grid) {
+  console.log(grid.position);
+  grid.move(direction);
+  const pipe = grid.getCurrent();
+  console.log(pipe);
+  const outputDirection = pipe.outputs.filter(
+    (dir) => dir !== oppositeDirection(direction),
+  );
+  console.log(
+    `Moving ${direction} into position ${grid.position} which is pipe ${pipe.inputs}, output direction is ${outputDirection}`,
+  );
+  return outputDirection;
+}
+
+function oppositeDirection(direction: Direction): Direction {
+  switch (direction) {
+    case "UP":
+      return "DOWN";
+    case "DOWN":
+      return "UP";
+    case "LEFT":
+      return "RIGHT";
+    case "RIGHT":
+      return "LEFT";
+  }
+}
+
+// export function getConnectingPipe(directions: [Direction, Direction]) {
+//   let sortedDirections = directions.slice();
+//   sortedDirections.sort();
+//   if (sortedDirections[0] === "DOWN") {
+//     if (sortedDirections[1] === "LEFT") {
+//       return "7"
+//     }
+//   }
+// }
+
+export function getCompatiblePipes(pipes: Directions): Direction[] {
+  let compatibleDirections: Direction[] = [];
+  if (pipes.up.inputs.length && pipes.up.inputs.includes("UP")) {
+    compatibleDirections.push("UP");
+  }
+  if (pipes.down.inputs.length && pipes.down.inputs.includes("DOWN")) {
+    compatibleDirections.push("DOWN");
+  }
+  if (pipes.left.inputs.length && pipes.left.inputs.includes("LEFT")) {
+    compatibleDirections.push("LEFT");
+  }
+  if (pipes.right.inputs.length && pipes.right.inputs.includes("RIGHT")) {
+    compatibleDirections.push("RIGHT");
+  }
+  if (compatibleDirections.length !== 2) {
+    throw new Error(
+      `Pipe does not connect to 2 others, connects to ${compatibleDirections.length}`,
+    );
+  }
+  return compatibleDirections;
+}
 
 type Point = {
   x: number;
@@ -54,6 +111,12 @@ export function findInGrid(char: string, grid: String[][]): Point {
 }
 
 type Direction = "UP" | "RIGHT" | "DOWN" | "LEFT";
+type Directions = {
+  up: PipeIO;
+  down: PipeIO;
+  right: PipeIO;
+  left: PipeIO;
+};
 
 type OrthogonalCell = {
   direction: Direction;
@@ -62,55 +125,61 @@ type OrthogonalCell = {
 
 type Pipe = "|" | "-" | "L" | "J" | "7" | "F" | ".";
 
-export const pipes = new Map<Pipe, Point[]>([
+type PipeIO = {
+  inputs: [Direction, Direction] | [];
+  outputs: [Direction, Direction] | [];
+};
+
+export const pipes = new Map<Pipe, PipeIO>([
   [
     "|",
-    [
-      { x: 0, y: -1 },
-      { x: 0, y: 1 },
-    ],
+    {
+      inputs: ["DOWN", "UP"],
+      outputs: ["DOWN", "UP"],
+    },
   ],
+
   [
     "-",
-    [
-      { x: -1, y: 0 },
-      { x: 1, y: 0 },
-    ],
+    {
+      inputs: ["LEFT", "RIGHT"],
+      outputs: ["LEFT", "RIGHT"],
+    },
   ],
   [
     "L",
-    [
-      { x: 0, y: -1 },
-      { x: 1, y: 0 },
-    ],
+    {
+      inputs: ["DOWN", "LEFT"],
+      outputs: ["UP", "RIGHT"],
+    },
   ],
   [
     "J",
-    [
-      { x: -1, y: 0 },
-      { x: -1, y: 0 },
-    ],
+    {
+      inputs: ["DOWN", "RIGHT"],
+      outputs: ["LEFT", "UP"],
+    },
   ],
   [
     "7",
-    [
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-    ],
+    {
+      inputs: ["UP", "RIGHT"],
+      outputs: ["DOWN", "LEFT"],
+    },
   ],
   [
     "F",
-    [
-      { x: 1, y: 0 },
-      { x: 0, y: 1 },
-    ],
+    {
+      inputs: ["UP", "LEFT"],
+      outputs: ["DOWN", "RIGHT"],
+    },
   ],
   [
     ".",
-    [
-      { x: 0, y: 0 },
-      { x: 0, y: 0 },
-    ],
+    {
+      inputs: [],
+      outputs: [],
+    },
   ],
 ]);
 
