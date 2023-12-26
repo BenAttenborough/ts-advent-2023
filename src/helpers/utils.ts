@@ -88,14 +88,14 @@ export const Utils = {
 
 export class Grid {
   content: any[][];
-  position: [number, number];
+  position: number[];
   constructor(content: any, position?: [number, number]) {
     this.content = content;
     this.position = position || [0, 0];
   }
 
   get(x: number, y: number): any {
-    return this.content[y][x];
+    return this.content[y]?.[x];
   }
 
   getRow(row: number): any[] {
@@ -134,15 +134,19 @@ export class Grid {
       .map((values) => gridReducer(values));
   }
 
-  private checkPosition(pos: [number, number]): boolean {
+  private checkPosition(pos: number[]): boolean {
     if (this.getRow(pos[1]) && this.get(pos[0], pos[1])) {
       return true;
     }
     return false;
   }
 
+  setPosition(x: number, y: number) {
+    this.position = [y, x];
+  }
+
   move(direction: Grid.Direction) {
-    let proposedPosition: [number, number] = this.position.slice();
+    let proposedPosition: number[] = this.position.slice();
     switch (direction) {
       case "UP":
         proposedPosition[1] -= 1;
@@ -156,6 +160,36 @@ export class Grid {
     if (this.checkPosition(proposedPosition)) {
       this.position = proposedPosition;
     }
+  }
+
+  findFirst(needle: any): number[] {
+    for (let y = 0; y < this.content.length; y++) {
+      for (let x = 0; x < this.content[y].length; x++) {
+        if (this.content[y][x] === needle) {
+          return [x, y];
+        }
+      }
+    }
+    throw new Error(`${needle} does not exist in grid`);
+  }
+
+  pushIf(arr: any[], value: any) {
+    if (value !== undefined) {
+      arr.push(value);
+    }
+  }
+
+  getOrthogonalValues(x: number, y: number): any[] {
+    let values: any = [];
+    this.pushIf(values, this.get(x, y - 1));
+    this.pushIf(values, this.get(x + 1, y));
+    this.pushIf(values, this.get(x, y + 1));
+    this.pushIf(values, this.get(x - 1, y));
+    return values;
+  }
+
+  getOrthogonalValuesFromCurrentPosition(): any[] {
+    return this.getOrthogonalValues(...this.position);
   }
 }
 

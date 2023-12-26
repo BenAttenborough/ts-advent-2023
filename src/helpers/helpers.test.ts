@@ -79,6 +79,7 @@ test("Grid", () => {
     ["d", "e", "f"],
   ]);
   expect(myGrid.get(2, 1)).toBe("f");
+  expect(myGrid.get(1, 2)).toBe(undefined);
 
   const myNumbers = new Grid([
     [1, 2, 3],
@@ -108,7 +109,11 @@ test("Grid", () => {
   myNumbers.move("RIGHT");
   expect(myNumbers.position).toStrictEqual([2, 1]);
   expect(myNumbers.getCurrent()).toBe(6);
-  myNumbers.forEach((cell, x, y) => {
-    console.log(`Cell x ${x} y ${y}: ${cell}`);
-  });
+  // myNumbers.forEach((cell, x, y) => {
+  //   console.log(`Cell x ${x} y ${y}: ${cell}`);
+  // });
+  expect(myNumbers.findFirst(1)).toStrictEqual([0, 0]);
+  expect(myNumbers.findFirst(6)).toStrictEqual([2, 1]);
+  expect(myNumbers.getOrthogonalValues(0, 0)).toStrictEqual([2, 4]);
+  expect(myNumbers.getOrthogonalValues(1, 0)).toStrictEqual([3, 5, 1]);
 });

@@ -1,21 +1,31 @@
+import { Grid } from "../helpers/utils.ts";
+
+function dirs(top: any, right: any, bottom: any, left: any) {
+  return { top, right, bottom, left };
+}
+
 export const Day10 = {
   partOne: (input: string): number => {
-    const result = input.split("\n").map((x) => x.split(""));
-    console.log(result);
-    const startLocation = findInGrid(`S`, result);
-    console.log(startLocation);
-    const cellsOrthogonalToStart = getOrthogonalCellsSafely(
-      startLocation,
-      result[0].length,
-      result.length,
-    );
-    console.log(
-      "cellsOrthogonalToStart",
-      cellsOrthogonalToStart.map(
-        (orthogonalCell) =>
-          result[orthogonalCell.cell.y][orthogonalCell.cell.x],
-      ),
-    );
+    const grid = new Grid(input.split("\n").map((x) => x.split("")));
+    grid.setPosition(...grid.findFirst("S"));
+    // grid.setPosition(grid.findFirst("S")[0], grid.findFirst("S")[1]);
+    console.log(grid);
+    console.log(grid.getOrthogonalValues(...grid.position));
+    console.log(dirs(...grid.getOrthogonalValuesFromCurrentPosition()));
+    // const startLocation = findInGrid(`S`, result);
+    // console.log(startLocation);
+    // const cellsOrthogonalToStart = getOrthogonalCellsSafely(
+    //   startLocation,
+    //   result[0].length,
+    //   result.length,
+    // );
+    // console.log(
+    //   "cellsOrthogonalToStart",
+    //   cellsOrthogonalToStart.map(
+    //     (orthogonalCell) =>
+    //       result[orthogonalCell.cell.y][orthogonalCell.cell.x],
+    //   ),
+    // );
     return 0;
   },
 
