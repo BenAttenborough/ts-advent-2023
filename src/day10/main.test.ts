@@ -7,9 +7,16 @@ import {
   pipeDirection,
   pipes,
   getCompatiblePipes,
+  getOutput,
 } from "./main.ts";
 
 let inputTest: IO.result = {
+  isSuccess: false,
+  value: "",
+  error: null,
+};
+
+let inputComplex: IO.result = {
   isSuccess: false,
   value: "",
   error: null,
@@ -27,6 +34,13 @@ beforeAll(async () => {
     inputTest = IO.success(temp);
   } catch (err) {
     inputTest = IO.failure(err);
+  }
+
+  try {
+    let temp: string = await IO.getInput(__dirname, "input_complex.txt");
+    inputComplex = IO.success(temp);
+  } catch (err) {
+    inputComplex = IO.failure(err);
   }
 
   try {
@@ -81,56 +95,35 @@ test("10-checkCompatiblePipes", () => {
   ).toStrictEqual(["DOWN", "RIGHT"]);
 });
 
-// test("10-1-getOrthogonalCells", () => {
-//   expect(getOrthogonalCells({ x: 0, y: 0 })).toStrictEqual([
-//     { x: 0, y: -1 },
-//     { x: 1, y: 0 },
-//     { x: 0, y: 1 },
-//     { x: -1, y: 0 },
-//   ]);
-// });
-
-// test("10-getOrthongonalCellsSafely", () => {
-//   expect(getOrthogonalCellsSafely({ x: 0, y: 0 }, 2, 2)).toStrictEqual([
-//     { x: 1, y: 0 },
-//     { x: 0, y: 1 },
-//   ]);
-//   expect(getOrthogonalCellsSafely({ x: 1, y: 0 }, 2, 2)).toStrictEqual([
-//     { x: 1, y: 1 },
-//     { x: 0, y: 0 },
-//   ]);
-//   expect(getOrthogonalCellsSafely({ x: 1, y: 1 }, 2, 2)).toStrictEqual([
-//     { x: 1, y: 0 },
-//     { x: 0, y: 1 },
-//   ]);
-// });
-
-// test("10 pipeDirection", () => {
-//   expect(pipeDirection({ x: 1, y: 0 }, pipes.get("-"))).toStrictEqual({
-//     x: 1,
-//     y: 0,
-//   });
-//   expect(pipeDirection({ x: 1, y: 0 }, pipes.get("7"))).toStrictEqual({
-//     x: 0,
-//     y: 1,
-//   });
-// });
+test("10-getOutput", () => {
+  expect(getOutput({ outputs: ["UP", "DOWN"] }, "DOWN")).toBe("DOWN");
+  expect(getOutput({ outputs: ["UP", "RIGHT"] }, "DOWN")).toBe("RIGHT");
+  expect(getOutput({ outputs: ["LEFT", "RIGHT"] }, "RIGHT")).toBe("RIGHT");
+});
 
 test("10-1-test", () => {
   if (inputTest.isSuccess) {
-    expect(Day10.partOne(inputTest.value)).toBe(0);
+    expect(Day10.partOne(inputTest.value)).toBe(4);
   } else {
     console.error(inputTest.error);
   }
 });
 
-// test("10-1-real", () => {
-//   if (inputReal.isSuccess) {
-//     expect(Day10.partOne(inputReal.value)).toBe(0);
-//   } else {
-//     console.error(inputReal.error);
-//   }
-// });
+test("10-1-test-complex", () => {
+  if (inputComplex.isSuccess) {
+    expect(Day10.partOne(inputComplex.value)).toBe(8);
+  } else {
+    console.error(inputComplex.error);
+  }
+});
+
+test("10-1-real", () => {
+  if (inputReal.isSuccess) {
+    expect(Day10.partOne(inputReal.value)).toBe(6842);
+  } else {
+    console.error(inputReal.error);
+  }
+});
 
 // test("10-2-test", () => {
 //   if (inputTest.isSuccess) {

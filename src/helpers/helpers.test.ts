@@ -78,8 +78,8 @@ test("Grid", () => {
     ["a", "b", "c"],
     ["d", "e", "f"],
   ]);
-  expect(myGrid.get(2, 1)).toBe("f");
-  expect(myGrid.get(1, 2)).toBe(undefined);
+  expect(myGrid.get([2, 1])).toBe("f");
+  expect(myGrid.get([1, 2])).toBe(undefined);
 
   const myNumbers = new Grid([
     [1, 2, 3],
@@ -89,10 +89,12 @@ test("Grid", () => {
     [2, 3, 4],
     [5, 6, 7],
   ]);
-  expect(myNumbers.set(0, 0, 9).content).toStrictEqual([
+  myNumbers.set([0, 0], 9);
+  expect(myNumbers.content).toStrictEqual([
     [9, 2, 3],
     [4, 5, 6],
   ]);
+  myNumbers.set([0, 0], 1);
   expect(myNumbers.getCurrent()).toBe(1);
   myNumbers.move("DOWN");
   expect(myNumbers.position).toStrictEqual([0, 1]);
@@ -113,7 +115,7 @@ test("Grid", () => {
   //   console.log(`Cell x ${x} y ${y}: ${cell}`);
   // });
   expect(myNumbers.findFirst(1)).toStrictEqual([0, 0]);
-  expect(myNumbers.findFirst(6)).toStrictEqual([2, 1]);
-  expect(myNumbers.getOrthogonalValues(0, 0)).toStrictEqual([2, 4]);
-  expect(myNumbers.getOrthogonalValues(1, 0)).toStrictEqual([3, 5, 1]);
+  expect(myNumbers.findFirst(6)).toStrictEqual([1, 2]);
+  expect(myNumbers.getOrthogonalValues([0, 0])).toStrictEqual([2, 4]);
+  expect(myNumbers.getOrthogonalValues([1, 0])).toStrictEqual([3, 5, 1]);
 });

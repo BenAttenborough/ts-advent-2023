@@ -1,30 +1,51 @@
 import { Grid } from "../helpers/utils.ts";
 
-function dirs(up: any, right: any, down: any, left: any): Directions {
+function dirs([up, right, down, left]: [any, any, any, any]): Directions {
+  if (up === undefined) {
+    up = { inputs: [], outputs: [] };
+  }
+  if (right === undefined) {
+    right = { inputs: [], outputs: [] };
+  }
+  if (down === undefined) {
+    down = { inputs: [], outputs: [] };
+  }
+  if (left === undefined) {
+    left = { inputs: [], outputs: [] };
+  }
   return { up, right, down, left };
 }
 
 export const Day10 = {
   partOne: (input: string): number => {
     const grid = new Grid(input.split("\n").map((x) => x.split("")));
-    grid.setPosition(...grid.findFirst("S"));
-    console.log(grid);
+    grid.setPosition(grid.findFirst("S"));
     const convertedGrid = grid.map((cell) => pipes.get(cell));
-    console.log(convertedGrid);
     const neighbouringCells =
       convertedGrid.getOrthogonalValuesFromCurrentPosition();
-    //   .map((cell) => pipes.get(cell));
-    console.log("dirs", dirs(...neighbouringCells));
-    const startingPipe = getCompatiblePipes(dirs(...neighbouringCells));
-    console.log("startingPipe", startingPipe);
+    const startingPipe = getCompatiblePipes(dirs(neighbouringCells));
+    const replacementPipie = {
+      inputs: [
+        oppositeDirection(startingPipe[0]),
+        oppositeDirection(startingPipe[1]),
+      ].sort(),
+      outputs: startingPipe,
+    };
+    convertedGrid.set(convertedGrid.position, replacementPipie);
+    let count = 0;
+    let direction = startingPipe[0];
     const startX = convertedGrid.position[0];
     const startY = convertedGrid.position[1];
-    let count = 0;
-    traverse(startingPipe[0], convertedGrid);
-    // do {
-
-    // } while ()
-    return 0;
+    do {
+      count++;
+      direction = traverse(direction, convertedGrid);
+    } while (
+      !(
+        convertedGrid.position[0] == startX &&
+        convertedGrid.position[1] == startY
+      )
+    );
+    return count / 2;
   },
 
   partTwo: (input: string): number => {
@@ -33,17 +54,22 @@ export const Day10 = {
 };
 
 function traverse(direction: Direction, grid: Grid) {
-  console.log(grid.position);
   grid.move(direction);
   const pipe = grid.getCurrent();
-  console.log(pipe);
-  const outputDirection = pipe.outputs.filter(
+  return getOutput(pipe, direction);
+}
+
+export function getOutput(pipe: PipeIO, direction: Direction): Direction {
+  const result = pipe.outputs.filter(
     (dir) => dir !== oppositeDirection(direction),
   );
-  console.log(
-    `Moving ${direction} into position ${grid.position} which is pipe ${pipe.inputs}, output direction is ${outputDirection}`,
-  );
-  return outputDirection;
+  if (result.length !== 1) {
+    throw new Error(
+      `Pipe with outputs ${pipe.outputs} is not compatible with an input of ${direction}`,
+    );
+  } else {
+    return result[0];
+  }
 }
 
 function oppositeDirection(direction: Direction): Direction {
@@ -58,16 +84,6 @@ function oppositeDirection(direction: Direction): Direction {
       return "LEFT";
   }
 }
-
-// export function getConnectingPipe(directions: [Direction, Direction]) {
-//   let sortedDirections = directions.slice();
-//   sortedDirections.sort();
-//   if (sortedDirections[0] === "DOWN") {
-//     if (sortedDirections[1] === "LEFT") {
-//       return "7"
-//     }
-//   }
-// }
 
 export function getCompatiblePipes(pipes: Directions): Direction[] {
   let compatibleDirections: Direction[] = [];
@@ -227,32 +243,11 @@ export function getOrthogonalCellsSafely(
 
 // This assumes all pipes connect
 export function pipeDirection(entrance: Point, pipe: Point[]): Point {
-  // console.log("entrance", entrance);
   const connectionPoint = {
     x: oppositeSide(entrance.x),
     y: oppositeSide(entrance.y),
   };
-  // console.log("connectionPoint", connectionPoint);
-  // console.log("pipe", pipe);
-  // console.log(
-  //   "pipe.filter((point) => point !== connectionPoint)[0];",
-  //   pipe.filter((point) => point !== connectionPoint)[0],
-  // );
   return pipe.filter(
     (point) => point.x !== connectionPoint.x || point.y !== connectionPoint.y,
   )[0];
-}
-
-// export function calculateStartPipe(startCord: Point): pipe {
-
-// }
-
-export function doesPipeConnect(orthogonalCell: OrthogonalCell): boolean {
-  switch (orthogonalCell.direction) {
-    case "UP":
-      return;
-    case "RIGHT":
-    case "DOWN":
-    case "LEFT":
-  }
 }

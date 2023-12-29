@@ -1,11 +1,3 @@
-import { Direction } from "readline";
-
-type instruction = {
-  amount: number;
-  start: number;
-  end: number;
-};
-
 export const Utils = {
   lines: (input: string): string[] => {
     return input.split("\n");
@@ -88,13 +80,13 @@ export const Utils = {
 
 export class Grid {
   content: any[][];
-  position: number[];
-  constructor(content: any, position?: [number, number]) {
+  position: Grid.Point;
+  constructor(content: any, position?: Grid.Point) {
     this.content = content;
     this.position = position || [0, 0];
   }
 
-  get(x: number, y: number): any {
+  get([x, y]: Grid.Point): any {
     return this.content[y]?.[x];
   }
 
@@ -103,13 +95,11 @@ export class Grid {
   }
 
   getCurrent(): any {
-    return this.get(this.position[0], this.position[1]);
+    return this.get(this.position);
   }
 
-  set(x: number, y: number, data: any): Grid {
-    let newContent = this.content.map((row) => row.slice());
-    newContent[y][x] = data;
-    return new Grid(newContent, this.position);
+  set([x, y]: Grid.Point, data: any) {
+    this.content[y][x] = data;
   }
 
   map(func: (x: any) => any[][]): Grid {
@@ -134,39 +124,44 @@ export class Grid {
       .map((values) => gridReducer(values));
   }
 
-  private checkPosition(pos: number[]): boolean {
-    if (this.getRow(pos[1]) && this.get(pos[0], pos[1])) {
+  private checkPosition(pos: Grid.Point): boolean {
+    if (this.getRow(pos[1]) && this.get(pos)) {
       return true;
     }
     return false;
   }
 
-  setPosition(x: number, y: number) {
+  setPosition([x, y]: Grid.Point) {
     this.position = [y, x];
   }
 
   move(direction: Grid.Direction) {
-    let proposedPosition: number[] = this.position.slice();
+    let proposedPosition: Grid.Point = [...this.position];
     switch (direction) {
       case "UP":
         proposedPosition[1] -= 1;
+        break;
       case "DOWN":
         proposedPosition[1] += 1;
+        break;
       case "LEFT":
         proposedPosition[0] -= 1;
+        break;
       case "RIGHT":
         proposedPosition[0] += 1;
+        break;
     }
+
     if (this.checkPosition(proposedPosition)) {
       this.position = proposedPosition;
     }
   }
 
-  findFirst(needle: any): number[] {
+  findFirst(needle: any): Grid.Point {
     for (let y = 0; y < this.content.length; y++) {
       for (let x = 0; x < this.content[y].length; x++) {
         if (this.content[y][x] === needle) {
-          return [x, y];
+          return [y, x];
         }
       }
     }
@@ -179,20 +174,27 @@ export class Grid {
     }
   }
 
-  getOrthogonalValues(x: number, y: number): any[] {
+  getOrthogonalValues([x, y]: Grid.Point): any[] {
     let values: any = [];
-    this.pushIf(values, this.get(x, y - 1));
-    this.pushIf(values, this.get(x + 1, y));
-    this.pushIf(values, this.get(x, y + 1));
-    this.pushIf(values, this.get(x - 1, y));
+    this.pushIf(values, this.get([x, y - 1]));
+    this.pushIf(values, this.get([x + 1, y]));
+    this.pushIf(values, this.get([x, y + 1]));
+    this.pushIf(values, this.get([x - 1, y]));
+
+    // values.push(this.get([x + 1, y]));
+    // values.push(this.get([x, y - 1]));
+    // values.push(this.get([x, y + 1]));
+    // values.push(this.get([x - 1, y]));
+
     return values;
   }
 
   getOrthogonalValuesFromCurrentPosition(): any[] {
-    return this.getOrthogonalValues(...this.position);
+    return this.getOrthogonalValues(this.position);
   }
 }
 
 module Grid {
   export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+  export type Point = [number, number];
 }

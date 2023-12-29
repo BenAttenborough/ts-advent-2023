@@ -6,8 +6,8 @@ export const Day05 = {
     let seeds = result[0].slice(7).split(" ").map(Number);
     let conversionTables = getConversionTables(input);
 
-    const processedSeeds = seeds.map((x) =>
-      fullyProcessSeed(conversionTables, x),
+    const processedSeeds = seeds.map((seed) =>
+      fullyProcessSeed(conversionTables, seed),
     );
 
     const answer = processedSeeds.reduce((prev, next, idx) => {
