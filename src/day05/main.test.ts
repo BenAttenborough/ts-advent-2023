@@ -4,6 +4,7 @@ import {
   fullyProcessSeed,
   getConversionTables,
   splitRange,
+  processRange,
 } from "./main.ts";
 
 let inputTest = "";
@@ -30,14 +31,54 @@ beforeAll(async () => {
 //   expect(Day05.partOne(inputReal)).toBe(313045984);
 // });
 
-// test("05-2-test", () => {
-//   // expect(Day05.partTwo(inputTest)).toBe(46);
-//   expect(Day05.partTwo(inputTest)).toBe(0);
-// });
+test("05-2-test", () => {
+  // expect(Day05.partTwo(inputTest)).toBe(46);
+  expect(Day05.partTwo(inputTest)).toBe(0);
+});
 
 // test("05-2-real", () => {
 //   expect(Day05.partTwo(inputReal)).toBe(0);
 // });
+
+test("processRange", () => {
+  expect(
+    processRange([10, 20], {
+      destinationRangeStart: 0,
+      sourceRangeStart: 10,
+      rangeLength: 10,
+    }),
+  ).toStrictEqual([0, 10]);
+
+  // let conversion = {
+  //   destinationRangeStart: 50,
+  //   sourceRangeStart: 98,
+  //   rangeLength: 2,
+  // };
+
+  let conversion = {
+    destinationRangeStart: 52,
+    sourceRangeStart: 50,
+    rangeLength: 48,
+  };
+  let ranges = [
+    [79, 93],
+    [55, 68],
+  ];
+  ranges.map((range) => {
+    let splitRanges = splitRange(range, [
+      conversion.sourceRangeStart,
+      conversion.sourceRangeStart + conversion.rangeLength - 1,
+    ]);
+    // if (splitRanges.length === 2) {
+    //   return processRange(splitRanges[1], conversion);
+    // }
+    return splitRanges;
+  });
+  console.log("Process ranges", ranges);
+  // expect(
+  //   processRange()
+  // )
+});
 
 test("splitRange", () => {
   expect(splitRange([79, 93], [50, 98])).toStrictEqual([[79, 93]]);

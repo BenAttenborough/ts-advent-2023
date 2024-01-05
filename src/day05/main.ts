@@ -37,7 +37,7 @@ export const Day05 = {
       }
     }
 
-    console.log("ranges", ranges);
+    console.log("ranges:", ranges);
 
     let seedSet = new Set<number>();
     while (seeds.length) {
@@ -104,19 +104,18 @@ function processSeed(seed: number, conversion: Conversion): number {
   let isBelowOrEqualToRangeEnd =
     seed <= conversion.sourceRangeStart + conversion.rangeLength - 1;
   if (isAboveOrEqualToRangeStart && isBelowOrEqualToRangeEnd) {
-    // const sourceRange = Utils.range(
-    //   conversion.sourceRangeStart,
-    //   conversion.sourceRangeStart + conversion.rangeLength - 1,
-    // );
-    // const destinationRange = Utils.range(
-    //   conversion.destinationRangeStart,
-    //   conversion.destinationRangeStart + conversion.rangeLength - 1,
-    // );
-    // const indexToConvert = sourceRange.findIndex((x) => x === seed);
-    // return destinationRange[indexToConvert];
     return seed - diff;
   }
   return seed;
+}
+
+export function processRange(
+  [start, end]: [number, number],
+  conversion: Conversion,
+): [number, number] {
+  let diff: number =
+    conversion.sourceRangeStart - conversion.destinationRangeStart;
+  return [start - diff, end - diff];
 }
 
 export function splitRange(
