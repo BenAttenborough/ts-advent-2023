@@ -23,38 +23,50 @@ export const Day05 = {
   partTwo: (input: string): number => {
     let result = input.split("\n\n");
     let seeds = result[0].slice(7).split(" ").map(Number);
-    // console.log("seeds: ", seeds);
-    let seedSet = new Set();
+    console.log("seeds: ", seeds);
+
+    let testSeeds = [10, 10, 50, 5, 100, 20];
+    console.log("testSeeds", testSeeds);
+    let testRanges = [];
+    while (testSeeds.length) {
+      let start: number | undefined = testSeeds.shift();
+      let range: number | undefined = testSeeds.shift();
+      if (start && range) {
+        let end = start + range;
+        testRanges.push({ start, end });
+      }
+    }
+
+    console.log("testRanges", testRanges);
+
+    let seedSet = new Set<number>();
     while (seeds.length) {
       let start: number | undefined = seeds.shift();
       let range: number | undefined = seeds.shift();
-      // foo.push({
-      //   start: start,
-      //   range: range,
-      // });
       Utils.range(start, start + range - 1).forEach((seed) => {
         seedSet.add(seed);
       });
     }
 
-    // console.log("seedSet: ", seedSet);
+    console.log("seedSet: ", seedSet);
 
-    // let conversionTables = getConversionTables(input);
+    let conversionTables = getConversionTables(input);
 
-    // const processedSeeds = seeds.map((x) =>
-    //   fullyProcessSeed(conversionTables, x),
-    // );
+    const processedSeeds = Array.from(seedSet).map((x) =>
+      fullyProcessSeed(conversionTables, x),
+    );
 
-    // const answer = processedSeeds.reduce((prev, next, idx) => {
-    //   if (idx === 0) {
-    //     prev = next;
-    //   }
-    //   return next < prev ? next : prev;
-    // }, 0);
-    // console.log(answer);
+    console.log("processedSeeds", processedSeeds);
 
-    // return answer;
-    return 0;
+    const answer = processedSeeds.reduce((prev, next, idx) => {
+      if (idx === 0) {
+        prev = next;
+      }
+      return next < prev ? next : prev;
+    }, 0);
+    console.log(answer);
+
+    return answer;
   },
 };
 
