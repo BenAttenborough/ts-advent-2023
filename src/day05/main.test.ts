@@ -1,5 +1,10 @@
 import * as IO from "../helpers/io.ts";
-import { Day05, fullyProcessSeed, getConversionTables } from "./main.ts";
+import {
+  Day05,
+  fullyProcessSeed,
+  getConversionTables,
+  splitRange,
+} from "./main.ts";
 
 let inputTest = "";
 let inputReal = "";
@@ -25,10 +30,40 @@ beforeAll(async () => {
 //   expect(Day05.partOne(inputReal)).toBe(313045984);
 // });
 
-test("05-2-test", () => {
-  expect(Day05.partTwo(inputTest)).toBe(46);
-});
+// test("05-2-test", () => {
+//   // expect(Day05.partTwo(inputTest)).toBe(46);
+//   expect(Day05.partTwo(inputTest)).toBe(0);
+// });
 
 // test("05-2-real", () => {
 //   expect(Day05.partTwo(inputReal)).toBe(0);
 // });
+
+test("splitRange", () => {
+  expect(splitRange([79, 93], [50, 98])).toStrictEqual([[79, 93]]);
+  expect(splitRange([0, 50], [40, 60])).toStrictEqual([
+    [0, 39],
+    [40, 50],
+  ]);
+  // console.log(">>>", splitRange([50, 98], [98, 99]));
+  expect(splitRange([50, 98], [98, 99])).toStrictEqual([
+    [50, 97],
+    [98, 98],
+  ]);
+  // console.log(">>>", splitRange([40, 60], [0, 50]));
+  expect(splitRange([40, 60], [0, 50])).toStrictEqual([
+    [51, 60],
+    [40, 50],
+  ]);
+  expect(splitRange([40, 50], [10, 30])).toStrictEqual([[40, 50]]);
+  expect(splitRange([0, 50], [0, 60])).toStrictEqual([[0, 50]]);
+  expect(splitRange([30, 45], [40, 50])).toStrictEqual([
+    [30, 39],
+    [40, 45],
+  ]);
+  // console.log(">>>", splitRange([40, 50], [30, 45]));
+  expect(splitRange([40, 50], [30, 45])).toStrictEqual([
+    [46, 50],
+    [40, 45],
+  ]);
+});

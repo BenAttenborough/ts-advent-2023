@@ -25,19 +25,19 @@ export const Day05 = {
     let seeds = result[0].slice(7).split(" ").map(Number);
     console.log("seeds: ", seeds);
 
-    let testSeeds = [10, 10, 50, 5, 100, 20];
-    console.log("testSeeds", testSeeds);
-    let testRanges = [];
-    while (testSeeds.length) {
-      let start: number | undefined = testSeeds.shift();
-      let range: number | undefined = testSeeds.shift();
+    // let testSeeds = [10, 10, 50, 5, 100, 20];
+    // console.log("testSeeds", testSeeds);
+    let ranges = [];
+    while (seeds.length) {
+      let start: number | undefined = seeds.shift();
+      let range: number | undefined = seeds.shift();
       if (start && range) {
         let end = start + range;
-        testRanges.push({ start, end });
+        ranges.push({ start, end });
       }
     }
 
-    console.log("testRanges", testRanges);
+    console.log("ranges", ranges);
 
     let seedSet = new Set<number>();
     while (seeds.length) {
@@ -66,7 +66,7 @@ export const Day05 = {
     }, 0);
     console.log(answer);
 
-    return answer;
+    return 0;
   },
 };
 
@@ -117,6 +117,31 @@ function processSeed(seed: number, conversion: Conversion): number {
     return seed - diff;
   }
   return seed;
+}
+
+export function splitRange(
+  [inputStart, inputEnd]: [number, number],
+  [targetStart, targetEnd]: [number, number],
+): [[number, number]] {
+  // console.log(
+  //   `input start: ${inputStart}\ninput end: ${inputEnd}\ntarget start: ${targetStart}\ntarget end: ${targetEnd}`,
+  // );
+  if (targetStart === inputStart && targetEnd === inputEnd) {
+    return [[inputStart, inputEnd]];
+  }
+  if (targetStart <= inputEnd && targetEnd >= inputStart) {
+    let unaffectedRange: [number, number] | undefined = undefined;
+    if (targetStart > inputStart) {
+      unaffectedRange = [inputStart, targetStart - 1];
+    } else if (targetEnd < inputEnd) {
+      unaffectedRange = [targetEnd + 1, inputEnd];
+    }
+    return [
+      unaffectedRange,
+      [Math.max(inputStart, targetStart), Math.min(inputEnd, targetEnd)],
+    ].filter((x) => x?.length);
+  }
+  return [[inputStart, inputEnd]];
 }
 
 type Conversion = {
