@@ -64,17 +64,18 @@ test("processRange", () => {
     [79, 93],
     [55, 68],
   ];
-  ranges.map((range) => {
+  ranges = ranges.map((range) => {
     let splitRanges = splitRange(range, [
       conversion.sourceRangeStart,
       conversion.sourceRangeStart + conversion.rangeLength - 1,
     ]);
+    console.log("splitRanges", splitRanges);
     // if (splitRanges.length === 2) {
     //   return processRange(splitRanges[1], conversion);
     // }
     return splitRanges;
   });
-  console.log("Process ranges", ranges);
+  console.log("Process ranges:", ranges);
   // expect(
   //   processRange()
   // )
