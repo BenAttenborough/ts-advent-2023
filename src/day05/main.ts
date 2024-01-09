@@ -6,12 +6,12 @@ export const Day05 = {
     let seeds = result[0].slice(7).split(" ").map(Number);
     let conversionTables = getConversionTables(input);
 
-    console.log("Part one seeds:", seeds);
+    // console.log("Part one seeds:", seeds);
 
     const processedSeeds = seeds.map((seed) =>
       fullyProcessSeed(conversionTables, seed),
     );
-    console.log("Part one fullyProcessSeed:", processedSeeds);
+    // console.log("Part one fullyProcessSeed:", processedSeeds);
 
     const answer = processedSeeds.reduce((prev, next, idx) => {
       if (idx === 0) {
@@ -23,7 +23,8 @@ export const Day05 = {
 
     return answer;
   },
-  partTwo: (input: string): number => {
+
+  partTwoBruteForce: (input: string): number => {
     let result = input.split("\n\n");
     let seeds = result[0].slice(7).split(" ").map(Number);
     // console.log("seeds: ", seeds);
@@ -73,7 +74,73 @@ export const Day05 = {
 
     return answer;
   },
+
+  partTwoProcessExperiment: (input: string): number => {
+    let result = input.split("\n\n");
+    let seeds = result[0].slice(7).split(" ").map(Number);
+
+    let seedSet = new Set<number>();
+    while (seeds.length) {
+      let start: number | undefined = seeds.shift();
+      let range: number | undefined = seeds.shift();
+      Utils.range(start, start + range - 1).forEach((seed) => {
+        seedSet.add(seed);
+      });
+    }
+
+    // seedSet.add(82);
+
+    // console.log("seedSet", seedSet);
+
+    let conversionTables = getConversionTables(input);
+
+    // const processedSeeds = Array.from(seedSet).map((x) => {
+    //   let currentSeed = x;
+    //   for (let i = 0; i < conversionName.length; i++) {
+    //     currentSeed = processMap(conversionTables, i, currentSeed);
+    //     // console.log(
+    //     //   `Seed set after ${conversionName[i]} process: ${currentSeedSet}`,
+    //     // );
+    //   }
+
+    //   return currentSeed;
+    // });
+
+    // console.log("processSoil", processedSeeds);
+    // console.log("processSoil min", Math.min(...processedSeeds));
+
+    let currentSeeds = Array.from(seedSet);
+
+    let contrainer: number[] = [];
+
+    conversionName.forEach((conversion, conversionIdx) => {
+      currentSeeds = currentSeeds.map((seed) => {
+        return processMap(conversionTables, conversionIdx, seed);
+      });
+      // console.log(`Process ${conversion}: ${Math.min(...currentSeeds)}`);
+      contrainer.push(Math.min(...currentSeeds));
+    });
+
+    console.log("Container:", contrainer);
+
+    return contrainer[contrainer.length - 1];
+  },
 };
+
+export function processMap(
+  conversionTables: Conversion[][],
+  mapIdx: number,
+  seed: number,
+) {
+  for (let i = 0; i < conversionTables[mapIdx].length; i++) {
+    const startingSeed = seed;
+    seed = processSeed(seed, conversionTables[mapIdx][i]);
+    if (seed !== startingSeed) {
+      break; // Stop looking for maps once one is found and applied
+    }
+  }
+  return seed;
+}
 
 export function fullyProcessSeed(
   conversionTables: Conversion[][],
@@ -87,9 +154,12 @@ export function fullyProcessSeed(
       //   `conversion stage: ${conversionName[i]} start ${startingSeed} end ${seed}`,
       // );
       if (seed !== startingSeed) {
-        break;
+        break; // Stop looking for maps once one is found and applied
       }
     }
+    // if (i === 0) {
+    //   console.log(`conversion stage: ${conversionName[i]} end ${seed}`);
+    // }
   }
   return seed;
 }
@@ -105,21 +175,15 @@ const conversionName = [
 ];
 
 function processSeed(seed: number, conversion: Conversion): number {
-  let diff: number =
-    conversion.sourceRangeStart - conversion.destinationRangeStart;
-
-  let isAboveOrEqualToRangeStart = seed >= conversion.sourceRangeStart;
-  let isBelowOrEqualToRangeEnd =
-    seed <= conversion.sourceRangeStart + conversion.rangeLength - 1;
-  if (isAboveOrEqualToRangeStart && isBelowOrEqualToRangeEnd) {
-    return seed - diff;
+  if (seed >= conversion.start && seed <= conversion.end) {
+    return seed - conversion.offset;
   }
   return seed;
 }
 
 export function processRange(
   [start, end]: [number, number],
-  conversion: ConversionPartTwo,
+  conversion: Conversion,
 ): [number, number] {
   // console.log(`${start} ${end}`);
   // console.log(`conversion: ${JSON.stringify(conversion)} `);
@@ -152,41 +216,12 @@ export function splitRange(
 }
 
 type Conversion = {
-  destinationRangeStart: number;
-  sourceRangeStart: number;
-  rangeLength: number;
-};
-
-export function getConversionTables(input: string): Conversion[][] {
-  let end = [];
-  let blocks = input.split("\n\n");
-
-  for (let i = 1; i < blocks.length; i++) {
-    const currentBlock = blocks[i];
-    const startIdx = currentBlock.indexOf(":") + 2;
-    let result = currentBlock
-      .slice(startIdx)
-      .split("\n")
-      .map((x) => x.split(" ").map(Number))
-      .map((x) => {
-        return {
-          destinationRangeStart: x[0],
-          sourceRangeStart: x[1],
-          rangeLength: x[2],
-        };
-      });
-    end.push(result);
-  }
-  return end;
-}
-
-type ConversionPartTwo = {
   start: number;
   end: number;
   offset: number;
 };
 
-export function getConversionTablesPart2(input: string): ConversionPartTwo[][] {
+export function getConversionTables(input: string): Conversion[][] {
   let end = [];
   let blocks = input.split("\n\n");
 
@@ -211,7 +246,7 @@ export function getConversionTablesPart2(input: string): ConversionPartTwo[][] {
 
 export function splitAndProcessRange(
   [inputStart, inputEnd]: [number, number],
-  conversion: ConversionPartTwo,
+  conversion: Conversion,
 ): [number, number][] {
   // console.log(
   //   `input start: ${inputStart}\ninput end: ${inputEnd}\ntarget start: ${targetStart}\ntarget end: ${targetEnd}`,
@@ -246,7 +281,7 @@ type SeedSplit = {
 
 export function splitAndProcessRange2(
   [inputStart, inputEnd]: [number, number],
-  conversion: ConversionPartTwo,
+  conversion: Conversion,
 ): SeedSplit {
   // console.log(
   //   `input start: ${inputStart}\ninput end: ${inputEnd}\ntarget start: ${targetStart}\ntarget end: ${targetEnd}`,
