@@ -6,9 +6,12 @@ export const Day05 = {
     let seeds = result[0].slice(7).split(" ").map(Number);
     let conversionTables = getConversionTables(input);
 
+    console.log("Part one seeds:", seeds);
+
     const processedSeeds = seeds.map((seed) =>
       fullyProcessSeed(conversionTables, seed),
     );
+    console.log("Part one fullyProcessSeed:", processedSeeds);
 
     const answer = processedSeeds.reduce((prev, next, idx) => {
       if (idx === 0) {
@@ -23,21 +26,21 @@ export const Day05 = {
   partTwo: (input: string): number => {
     let result = input.split("\n\n");
     let seeds = result[0].slice(7).split(" ").map(Number);
-    console.log("seeds: ", seeds);
+    // console.log("seeds: ", seeds);
 
     // let testSeeds = [10, 10, 50, 5, 100, 20];
     // console.log("testSeeds", testSeeds);
-    let ranges = [];
-    while (seeds.length) {
-      let start: number | undefined = seeds.shift();
-      let range: number | undefined = seeds.shift();
-      if (start && range) {
-        let end = start + range;
-        ranges.push({ start, end });
-      }
-    }
+    // let ranges = [];
+    // while (seeds.length) {
+    //   let start: number | undefined = seeds.shift();
+    //   let range: number | undefined = seeds.shift();
+    //   if (start && range) {
+    //     let end = start + range;
+    //     ranges.push({ start, end });
+    //   }
+    // }
 
-    console.log("ranges:", ranges);
+    // console.log("ranges:", ranges);
 
     let seedSet = new Set<number>();
     while (seeds.length) {
@@ -48,7 +51,7 @@ export const Day05 = {
       });
     }
 
-    console.log("seedSet: ", seedSet);
+    // console.log("seedSet: ", seedSet);
 
     let conversionTables = getConversionTables(input);
 
@@ -58,6 +61,8 @@ export const Day05 = {
 
     console.log("processedSeeds", processedSeeds);
 
+    fullyProcessSeed(conversionTables, 79);
+
     const answer = processedSeeds.reduce((prev, next, idx) => {
       if (idx === 0) {
         prev = next;
@@ -66,7 +71,7 @@ export const Day05 = {
     }, 0);
     console.log(answer);
 
-    return 0;
+    return answer;
   },
 };
 
@@ -78,6 +83,9 @@ export function fullyProcessSeed(
     for (let j = 0; j < conversionTables[i].length; j++) {
       const startingSeed = seed;
       seed = processSeed(seed, conversionTables[i][j]);
+      // console.log(
+      //   `conversion stage: ${conversionName[i]} start ${startingSeed} end ${seed}`,
+      // );
       if (seed !== startingSeed) {
         break;
       }
@@ -111,11 +119,11 @@ function processSeed(seed: number, conversion: Conversion): number {
 
 export function processRange(
   [start, end]: [number, number],
-  conversion: Conversion,
+  conversion: ConversionPartTwo,
 ): [number, number] {
-  let diff: number =
-    conversion.sourceRangeStart - conversion.destinationRangeStart;
-  return [start - diff, end - diff];
+  // console.log(`${start} ${end}`);
+  // console.log(`conversion: ${JSON.stringify(conversion)} `);
+  return [start - conversion.offset, end - conversion.offset];
 }
 
 export function splitRange(
@@ -170,4 +178,107 @@ export function getConversionTables(input: string): Conversion[][] {
     end.push(result);
   }
   return end;
+}
+
+type ConversionPartTwo = {
+  start: number;
+  end: number;
+  offset: number;
+};
+
+export function getConversionTablesPart2(input: string): ConversionPartTwo[][] {
+  let end = [];
+  let blocks = input.split("\n\n");
+
+  for (let i = 1; i < blocks.length; i++) {
+    const currentBlock = blocks[i];
+    const startIdx = currentBlock.indexOf(":") + 2;
+    let result = currentBlock
+      .slice(startIdx)
+      .split("\n")
+      .map((x) => x.split(" ").map(Number))
+      .map(([destStart, sourceStart, rangeLength]) => {
+        return {
+          start: sourceStart,
+          end: sourceStart + rangeLength - 1,
+          offset: sourceStart - destStart,
+        };
+      });
+    end.push(result);
+  }
+  return end;
+}
+
+export function splitAndProcessRange(
+  [inputStart, inputEnd]: [number, number],
+  conversion: ConversionPartTwo,
+): [number, number][] {
+  // console.log(
+  //   `input start: ${inputStart}\ninput end: ${inputEnd}\ntarget start: ${targetStart}\ntarget end: ${targetEnd}`,
+  // );
+  if (conversion.start === inputStart && conversion.end === inputEnd) {
+    return [[inputStart, inputEnd]];
+  }
+  if (conversion.start <= inputEnd && conversion.end >= inputStart) {
+    let unaffectedRange: [number, number] | undefined = undefined;
+    if (conversion.start > inputStart) {
+      unaffectedRange = [inputStart, conversion.start - 1];
+    } else if (conversion.end < inputEnd) {
+      unaffectedRange = [conversion.end + 1, inputEnd];
+    }
+    let rangeToProcess: [number, number] = [
+      Math.max(inputStart, conversion.start),
+      Math.min(inputEnd, conversion.end),
+    ];
+    const processedRange = processRange(rangeToProcess, conversion);
+    if (unaffectedRange) {
+      return [unaffectedRange, processedRange];
+    }
+    return [processedRange];
+  }
+  return [[inputStart, inputEnd]];
+}
+
+type SeedSplit = {
+  processed: [number, number][];
+  unprocessed: [number, number][];
+};
+
+export function splitAndProcessRange2(
+  [inputStart, inputEnd]: [number, number],
+  conversion: ConversionPartTwo,
+): SeedSplit {
+  // console.log(
+  //   `input start: ${inputStart}\ninput end: ${inputEnd}\ntarget start: ${targetStart}\ntarget end: ${targetEnd}`,
+  // );
+  if (conversion.start === inputStart && conversion.end === inputEnd) {
+    // return [[inputStart, inputEnd]];
+    return {
+      processed: [],
+      unprocessed: [[inputStart, inputEnd]],
+    };
+  }
+  if (conversion.start <= inputEnd && conversion.end >= inputStart) {
+    let unaffectedRange: [number, number] | undefined = undefined;
+    if (conversion.start > inputStart) {
+      unaffectedRange = [inputStart, conversion.start - 1];
+    } else if (conversion.end < inputEnd) {
+      unaffectedRange = [conversion.end + 1, inputEnd];
+    }
+    let rangeToProcess: [number, number] = [
+      Math.max(inputStart, conversion.start),
+      Math.min(inputEnd, conversion.end),
+    ];
+    const processedRange = processRange(rangeToProcess, conversion);
+    // return [processedRange];
+    return {
+      processed: [processedRange],
+      unprocessed: [],
+    };
+  }
+  // return [[inputStart, inputEnd]];
+  return {
+    processed: [],
+    unprocessed: [[inputStart, inputEnd]],
+  };
 }
