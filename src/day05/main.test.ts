@@ -7,6 +7,9 @@ import {
   getConversionTables,
   splitAndProcessRange,
   splitAndProcessRange2,
+  splitter,
+  splitRange1,
+  getSeedRanges,
 } from "./main.ts";
 
 let inputTest = "";
@@ -35,6 +38,18 @@ test("05-1-real", () => {
 
 test("05-2-partTwoProcessExperiment", () => {
   expect(Day05.partTwoProcessExperiment(inputTest)).toBe(46);
+  const result = inputTest.split("\n\n");
+  const seeds = result[0].slice(7).split(" ").map(Number);
+
+  // console.log("seeds", seeds);
+});
+
+// test("05-2-partTwoProcessExperiment2", () => {
+//   expect(Day05.partTwoProcessExperiment2(inputTest)).toBe(46);
+// });
+
+test("05-2-partTwoProcessExperiment3", () => {
+  expect(Day05.partTwoProcessExperiment3(inputTest)).toBe(46);
 });
 
 // test("05-2-partTwoBruteForce-test", () => {
@@ -77,6 +92,35 @@ test("05-2-partTwoProcessExperiment", () => {
 //   // });
 //   // console.log("Process ranges:", ranges);
 // });
+
+test("splitRange1", () => {
+  // let conversion = {
+  //   start: 0,
+  //   end: 50,
+  //   offset: 0,
+  // };
+  // let range = [40, 60];
+  // expect(splitRange1(conversion, range)).toStrictEqual([]);
+  let conversion = {
+    start: 25,
+    end: 75,
+    offset: 0,
+  };
+  let range = [0, 100];
+  // splitter(range, conversion);
+  expect(splitRange1(conversion, range)).toStrictEqual({
+    toProcess: [[25, 75]],
+    unprocessed: [
+      [0, 24],
+      [76, 100],
+    ],
+  });
+});
+
+// test("splitter", () => {
+
+//   expect(splitter()).toStrictEqual()
+// })
 
 // test("splitRange", () => {
 //   expect(splitRange([79, 93], [50, 98])).toStrictEqual([[79, 93]]);
@@ -158,3 +202,10 @@ test("05-2-partTwoProcessExperiment", () => {
 
 //   console.log("pass2", JSON.stringify(pass2));
 // });
+
+test("getSeedRanges", () => {
+  expect(getSeedRanges([79, 14, 55, 13])).toStrictEqual([
+    [79, 92],
+    [55, 67],
+  ]);
+});
