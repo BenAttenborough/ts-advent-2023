@@ -152,7 +152,7 @@ export function splitter(
       unprocessed: [],
     };
     partialClaculation = splitRange(conversion, range);
-    const processRange = partialClaculation.toProcess.map((range) => {
+    const processRange: Range = partialClaculation.toProcess.map((range) => {
       return [range[0] - conversion.offset, range[1] - conversion.offset];
     });
     container.toProcess.push(...processRange);

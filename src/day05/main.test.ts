@@ -2,9 +2,7 @@ import * as IO from "../helpers/io.ts";
 import {
   Day05,
   fullyProcessSeed,
-  processRange,
   getConversionTables,
-  splitter,
   splitRange,
   getSeedRanges,
 } from "./main.ts";
